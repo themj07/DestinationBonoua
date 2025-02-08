@@ -1,0 +1,169 @@
+{% extends 'bases/baseReste.html' %}
+
+
+{% load static %}
+
+{% block content %}
+
+        <!-- start of breadcumb-section -->
+        <div class="wpo-breadcumb-area">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="wpo-breadcumb-wrap">
+                            <h2>Author</h2>
+                            <ul>
+                                <li><a href="{% url 'index' %}">Home</a></li>
+                                <li><span>Author</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end of wpo-breadcumb-section-->
+
+        <!-- start of authorlist-->
+        <section class="authorlist-section section-padding">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-xl-4 col-12">
+                        <div class="wpo-section-title s2 wow fadeInLeftSlow" data-wow-duration="1700ms">
+                            <span>// author list</span>
+                            <h2>Discover the Talented Authors in Our hotely.</h2>
+                            href="{% url 'about' %}" class="theme-btn">list your property</a>
+                        </div>
+                    </div>
+                    <div class="col-xl-8 col-12">
+                        <div class="authorlist-wrap wow fadeInRightSlow" data-wow-duration="1700ms">
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-12">
+                                    <div class="auth-card">
+                                        <div class="shape">
+                                            <svg viewBox="0 0 250 246" fill="none">
+                                                <path
+                                                    d="M0 90.5622C0 85.4392 3.25219 80.8812 8.09651 79.2148L234.097 1.47079C241.887 -1.2093 250 4.57911 250 12.8182V234C250 240.627 244.627 246 238 246H12C5.37258 246 0 240.627 0 234V90.5622Z" />
+                                            </svg>
+                                        </div>
+                                        <div class="image">
+                                            <img src="{% static 'assets/images/authorlist/1.jpg' %}" alt="">
+                                        </div>
+                                        <div class="content">
+                                            <div class="rating">
+                                                Rating: 4.8 (<img src="{% static 'assets/images/authorlist/star.svg' %}" alt="">)
+                                            </div>
+                                            <h2>Esther Howard</h2>
+                                            <h4>Singapore</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-12">
+                                    <div class="auth-card">
+                                        <div class="shape">
+                                            <svg viewBox="0 0 250 246" fill="none">
+                                                <path
+                                                    d="M0 90.5622C0 85.4392 3.25219 80.8812 8.09651 79.2148L234.097 1.47079C241.887 -1.2093 250 4.57911 250 12.8182V234C250 240.627 244.627 246 238 246H12C5.37258 246 0 240.627 0 234V90.5622Z" />
+                                            </svg>
+                                        </div>
+                                        <div class="image">
+                                            <img src="{% static 'assets/images/authorlist/2.jpg' %}" alt="">
+                                        </div>
+                                        <div class="content">
+                                            <div class="rating">
+                                                Rating: 4.8 (<img src="{% static 'assets/images/authorlist/star.svg' %}" alt="">)
+                                            </div>
+                                            <h2>Jenny Wilson</h2>
+                                            <h4>Singapore</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-12">
+                                    <div class="auth-card">
+                                        <div class="shape">
+                                            <svg viewBox="0 0 250 246" fill="none">
+                                                <path
+                                                    d="M0 90.5622C0 85.4392 3.25219 80.8812 8.09651 79.2148L234.097 1.47079C241.887 -1.2093 250 4.57911 250 12.8182V234C250 240.627 244.627 246 238 246H12C5.37258 246 0 240.627 0 234V90.5622Z" />
+                                            </svg>
+                                        </div>
+                                        <div class="image">
+                                            <img src="{% static 'assets/images/authorlist/3.jpg' %}" alt="">
+                                        </div>
+                                        <div class="content">
+                                            <div class="rating">
+                                                Rating: 4.8 (<img src="{% static 'assets/images/authorlist/star.svg' %}" alt="">)
+                                            </div>
+                                            <h2>Kristin Watson</h2>
+                                            <h4>Singapore</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-12">
+                                    <div class="auth-card">
+                                        <div class="shape">
+                                            <svg viewBox="0 0 250 246" fill="none">
+                                                <path
+                                                    d="M0 90.5622C0 85.4392 3.25219 80.8812 8.09651 79.2148L234.097 1.47079C241.887 -1.2093 250 4.57911 250 12.8182V234C250 240.627 244.627 246 238 246H12C5.37258 246 0 240.627 0 234V90.5622Z" />
+                                            </svg>
+                                        </div>
+                                        <div class="image">
+                                            <img src="{% static 'assets/images/authorlist/4.jpg' %}" alt="">
+                                        </div>
+                                        <div class="content">
+                                            <div class="rating">
+                                                Rating: 4.8 (<img src="{% static 'assets/images/authorlist/star.svg' %}" alt="">)
+                                            </div>
+                                            <h2>Bessie Cooper</h2>
+                                            <h4>Singapore</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-12">
+                                    <div class="auth-card">
+                                        <div class="shape">
+                                            <svg viewBox="0 0 250 246" fill="none">
+                                                <path
+                                                    d="M0 90.5622C0 85.4392 3.25219 80.8812 8.09651 79.2148L234.097 1.47079C241.887 -1.2093 250 4.57911 250 12.8182V234C250 240.627 244.627 246 238 246H12C5.37258 246 0 240.627 0 234V90.5622Z" />
+                                            </svg>
+                                        </div>
+                                        <div class="image">
+                                            <img src="{% static 'assets/images/authorlist/5.jpg' %}" alt="">
+                                        </div>
+                                        <div class="content">
+                                            <div class="rating">
+                                                Rating: 4.8 (<img src="{% static 'assets/images/authorlist/star.svg' %}" alt="">)
+                                            </div>
+                                            <h2>Darlene Robertson</h2>
+                                            <h4>Singapore</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-12">
+                                    <div class="auth-card">
+                                        <div class="shape">
+                                            <svg viewBox="0 0 250 246" fill="none">
+                                                <path
+                                                    d="M0 90.5622C0 85.4392 3.25219 80.8812 8.09651 79.2148L234.097 1.47079C241.887 -1.2093 250 4.57911 250 12.8182V234C250 240.627 244.627 246 238 246H12C5.37258 246 0 240.627 0 234V90.5622Z" />
+                                            </svg>
+                                        </div>
+                                        <div class="image">
+                                            <img src="{% static 'assets/images/authorlist/6.jpg' %}" alt="">
+                                        </div>
+                                        <div class="content">
+                                            <div class="rating">
+                                                Rating: 4.8 (<img src="{% static 'assets/images/authorlist/star.svg' %}" alt="">)
+                                            </div>
+                                            <h2>Marvin McKinney</h2>
+                                            <h4>Singapore</h4>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- end of authorlist-->
+
+{% endblock content %}
