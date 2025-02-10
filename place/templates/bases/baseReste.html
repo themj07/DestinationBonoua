@@ -100,17 +100,14 @@
                                         <li class="{% if request.path == '/' %}active{% endif %}">
                                             <a href="{% url 'index' %}">Home</a>
                                         </li>
-                                        <li class="{% if request.path == '/about/' %}active{% endif %}">
-                                            <a href="{% url 'about' %}">About Us</a>
-                                        </li>
                                         <li class="menu-item-has-children {% if '/places' in request.path %}active{% endif %}">
                                             <a href="#">Places</a>
                                             <ul class="sub-menu">
                                                 <li class="{% if request.path == '/places/' %}active{% endif %}">
-                                                    <a href="{% url 'places' %}">Places</a>
+                                                    <a href="{% url 'places-instituts' %}">Institus</a>
                                                 </li>
-                                                <li class="{% if request.path == '/places-single/' %}active{% endif %}">
-                                                    <a href="{% url 'places-single' %}">Places Single</a>
+                                                <li class="{% if request.path == '/places-single-tourisme/' %}active{% endif %}">
+                                                    <a href="{% url 'places-tourismes' %}">Tourisme</a>
                                                 </li>
                                             </ul>
                                         </li>
@@ -160,7 +157,7 @@
                                             <a href="#">Blog</a>
                                             <ul class="sub-menu">
                                                 <li class="{% if request.path == '/blog/' %}active{% endif %}">
-                                                    <a href="{% url 'blog' %}">Blog Right Sidebar</a>
+                                                    <a href="{% url 'blogs' %}">Blog Right Sidebar</a>
                                                 </li>
                                                 <li class="{% if request.path == '/blog-left-sidebar/' %}active{% endif %}">
                                                     <a href="{% url 'blog-left-sidebar' %}">Blog Left Sidebar</a>
@@ -174,6 +171,9 @@
                                                     </ul>
                                                 </li>
                                             </ul>
+                                        </li>
+                                        <li class="{% if request.path == '/about/' %}active{% endif %}">
+                                            <a href="{% url 'about' %}">About Us</a>
                                         </li>
                                         <li class="{% if '/contact' in request.path %}active{% endif %}">
                                             <a href="{% url 'contact' %}">Contact</a>
@@ -356,12 +356,12 @@
                             <h3>popular places:</h3>
                         </div>
                         <ul>
-                            <li><a href="{% url 'places-single' %}">Eiffel Tower - France</a></li>
-                            <li><a href="{% url 'places-single' %}">Taj Mahal - India</a></li>
-                            <li><a href="{% url 'places-single' %}">Great Wall of China - China</a></li>
-                            <li><a href="{% url 'places-single' %}">Machu Picchu - Peru</a></li>
-                            <li><a href="{% url 'places-single' %}">Pyramids of Giza - Egypt</a></li>
-                            <li><a href="{% url 'places-single' %}"> Colosseum - Italy</a></li>
+                            <li><a href="{% url 'places-single-tourisme' %}">Eiffel Tower - France</a></li>
+                            <li><a href="{% url 'places-single-tourisme' %}">Taj Mahal - India</a></li>
+                            <li><a href="{% url 'places-single-tourisme' %}">Great Wall of China - China</a></li>
+                            <li><a href="{% url 'places-single-tourisme' %}">Machu Picchu - Peru</a></li>
+                            <li><a href="{% url 'places-single-tourisme' %}">Pyramids of Giza - Egypt</a></li>
+                            <li><a href="{% url 'places-single-tourisme' %}"> Colosseum - Italy</a></li>
                         </ul>
                     </div>
                 </div>

@@ -10,9 +10,9 @@ def author(request):
     return render(request, 'author.html', datas)
 
 
-def blog(request):
+def blogs(request):
     datas = {}
-    return render(request, 'blog.html', datas)
+    return render(request, 'blogs.html', datas)
 
 
 def blog_left_sidebar(request):
