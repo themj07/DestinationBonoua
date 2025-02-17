@@ -452,218 +452,14 @@
         <div class="gallery-container gallery-fancybox masonry-gallery row">
             <div class="col-xl-3 col-lg-4 col-md-6 col-12 custom-grid all new_york zoomIn" data-wow-duration="2000ms">
                 <div class="featured-card">
+                    {% for type in types %}
                     <div class="image">
-                        <img src="{% static 'assets/images/featured/1.jpg' %}" alt="">
+                        <img src="{{ type.image.url }}" alt="{{ type.name }}">
                     </div>
                     <div class="content">
-                        <div class="top-content">
-                            <ul>
-                                <li>
-                                    <span>$220</span>
-                                    <span class="date">Night</span>
-                                </li>
-                                <li>
-                                    <span>4.9</span>
-                                    <span class="date">Rating</span>
-                                </li>
-                                <li>
-                                    <span>08</span>
-                                    <span class="date">Beds</span>
-                                </li>
-                            </ul>
-                        </div>
-                        <h2><a href="{% url 'hotel-single' %}">Whispering Pines</a></h2>
-                        <span><i class="ti-location-pin"></i> Pine Tree Lane, Whisperwood</span>
+                        <h2><a href="{{ type.image.url }}">{{ type.name }}</a></h2>
                     </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-lg-4 col-md-6 col-12 custom-grid all london zoomIn" data-wow-duration="2000ms">
-                <div class="featured-card">
-                    <div class="image">
-                        <img src="{% static 'assets/images/featured/2.jpg' %}" alt="">
-                    </div>
-                    <div class="content">
-                        <div class="top-content">
-                            <ul>
-                                <li>
-                                    <span>$220</span>
-                                    <span class="date">Night</span>
-                                </li>
-                                <li>
-                                    <span>4.9</span>
-                                    <span class="date">Rating</span>
-                                </li>
-                                <li>
-                                    <span>08</span>
-                                    <span class="date">Beds</span>
-                                </li>
-                            </ul>
-                        </div>
-                        <h2><a href="{% url 'hotel-single' %}">Serenity Vista In</a></h2>
-                        <span><i class="ti-location-pin"></i>Serenity Avenue, Tranquil Town</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-lg-4 col-md-6 col-12 custom-grid all tokyo zoomIn" data-wow-duration="2000ms">
-                <div class="featured-card">
-                    <div class="image">
-                        <img src="{% static 'assets/images/featured/3.jpg' %}" alt="">
-                    </div>
-                    <div class="content">
-                        <div class="top-content">
-                            <ul>
-                                <li>
-                                    <span>$220</span>
-                                    <span class="date">Night</span>
-                                </li>
-                                <li>
-                                    <span>4.9</span>
-                                    <span class="date">Rating</span>
-                                </li>
-                                <li>
-                                    <span>08</span>
-                                    <span class="date">Beds</span>
-                                </li>
-                            </ul>
-                        </div>
-                        <h2><a href="{% url 'hotel-single' %}">Blissful Retreat Lodge</a></h2>
-                        <span><i class="ti-location-pin"></i>321 Bliss Way, Serene Valley</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-lg-4 col-md-6 col-12 custom-grid all new_york zoomIn" data-wow-duration="2000ms">
-                <div class="featured-card">
-                    <div class="image">
-                        <img src="{% static 'assets/images/featured/4.jpg' %}" alt="">
-                    </div>
-                    <div class="content">
-                        <div class="top-content">
-                            <ul>
-                                <li>
-                                    <span>$220</span>
-                                    <span class="date">Night</span>
-                                </li>
-                                <li>
-                                    <span>4.9</span>
-                                    <span class="date">Rating</span>
-                                </li>
-                                <li>
-                                    <span>08</span>
-                                    <span class="date">Beds</span>
-                                </li>
-                            </ul>
-                        </div>
-                        <h2><a href="{% url 'hotel-single' %}">Radiant Moon Hotel</a></h2>
-                        <span><i class="ti-location-pin"></i>Moonlight Boulevard, Starryville</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-lg-4 col-md-6 col-12 custom-grid all london zoomIn" data-wow-duration="2000ms">
-                <div class="featured-card">
-                    <div class="image">
-                        <img src="{% static 'assets/images/featured/5.jpg' %}" alt="">
-                    </div>
-                    <div class="content">
-                        <div class="top-content">
-                            <ul>
-                                <li>
-                                    <span>$220</span>
-                                    <span class="date">Night</span>
-                                </li>
-                                <li>
-                                    <span>4.9</span>
-                                    <span class="date">Rating</span>
-                                </li>
-                                <li>
-                                    <span>08</span>
-                                    <span class="date">Beds</span>
-                                </li>
-                            </ul>
-                        </div>
-                        <h2><a href="{% url 'hotel-single' %}">Whispering Pines</a></h2>
-                        <span><i class="ti-location-pin"></i>Pine Tree Lane, Whisperwood</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-lg-4 col-md-6 col-12 custom-grid all paris zoomIn" data-wow-duration="2000ms">
-                <div class="featured-card">
-                    <div class="image">
-                        <img src="{% static 'assets/images/featured/6.jpg' %}" alt="">
-                    </div>
-                    <div class="content">
-                        <div class="top-content">
-                            <ul>
-                                <li>
-                                    <span>$220</span>
-                                    <span class="date">Night</span>
-                                </li>
-                                <li>
-                                    <span>4.9</span>
-                                    <span class="date">Rating</span>
-                                </li>
-                                <li>
-                                    <span>08</span>
-                                    <span class="date">Beds</span>
-                                </li>
-                            </ul>
-                        </div>
-                        <h2><a href="{% url 'hotel-single' %}">Velvet Sands Hotel</a></h2>
-                        <span><i class="ti-location-pin"></i>753 Velvet Shore, Sandy Shores</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-lg-4 col-md-6 col-12 custom-grid all tokyo zoomIn" data-wow-duration="2000ms">
-                <div class="featured-card">
-                    <div class="image">
-                        <img src="{% static 'assets/images/featured/7.jpg' %}" alt="">
-                    </div>
-                    <div class="content">
-                        <div class="top-content">
-                            <ul>
-                                <li>
-                                    <span>$220</span>
-                                    <span class="date">Night</span>
-                                </li>
-                                <li>
-                                    <span>4.9</span>
-                                    <span class="date">Rating</span>
-                                </li>
-                                <li>
-                                    <span>08</span>
-                                    <span class="date">Beds</span>
-                                </li>
-                            </ul>
-                        </div>
-                        <h2><a href="{% url 'hotel-single' %}">Majestic Peaks Resort</a></h2>
-                        <span><i class="ti-location-pin"></i>951 Majestic View, Mountainville</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-lg-4 col-md-6 col-12 custom-grid all paris zoomIn" data-wow-duration="2000ms">
-                <div class="featured-card">
-                    <div class="image">
-                        <img src="{% static 'assets/images/featured/8.jpg' %}" alt="">
-                    </div>
-                    <div class="content">
-                        <div class="top-content">
-                            <ul>
-                                <li>
-                                    <span>$220</span>
-                                    <span class="date">Night</span>
-                                </li>
-                                <li>
-                                    <span>4.9</span>
-                                    <span class="date">Rating</span>
-                                </li>
-                                <li>
-                                    <span>08</span>
-                                    <span class="date">Beds</span>
-                                </li>
-                            </ul>
-                        </div>
-                        <h2><a href="{% url 'hotel-single' %}">Tranquil Oasis Inn</a></h2>
-                        <span><i class="ti-location-pin"></i>258 Oasis Street, Calmington</span>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -905,7 +701,7 @@
                     </div>
                     <div class="content">
                         <h2>
-                            <a href="{% url 'places-single-tourisme' %}">France</a>
+                            <a href="">France</a>
                         </h2>
                         <span>20 minutes drive</span>
                     </div>
@@ -916,7 +712,7 @@
                     </div>
                     <div class="content">
                         <h2>
-                            <a href="{% url 'places-single-tourisme' %}">United States</a>
+                            <a href="">United States</a>
                         </h2>
                         <span>18 minutes drive</span>
                     </div>
@@ -927,7 +723,7 @@
                     </div>
                     <div class="content">
                         <h2>
-                            <a href="{% url 'places-single-tourisme' %}">Australia</a>
+                            <a href="">Australia</a>
                         </h2>
                         <span>28 minutes drive</span>
                     </div>
@@ -938,7 +734,7 @@
                     </div>
                     <div class="content">
                         <h2>
-                            <a href="{% url 'places-single-tourisme' %}">Spain</a>
+                            <a href="">Spain</a>
                         </h2>
                         <span>30 minutes drive</span>
                     </div>
@@ -949,7 +745,7 @@
                     </div>
                     <div class="content">
                         <h2>
-                            <a href="{% url 'places-single-tourisme' %}">Greece</a>
+                            <a href="">Greece</a>
                         </h2>
                         <span>38 minutes drive</span>
                     </div>
@@ -960,7 +756,7 @@
                     </div>
                     <div class="content">
                         <h2>
-                            <a href="{% url 'places-single-tourisme' %}">Maldives</a>
+                            <a href="">Maldives</a>
                         </h2>
                         <span>22 minutes drive</span>
                     </div>
@@ -971,7 +767,7 @@
                     </div>
                     <div class="content">
                         <h2>
-                            <a href="{% url 'places-single-tourisme' %}">new York</a>
+                            <a href="">new York</a>
                         </h2>
                         <span>42 minutes drive</span>
                     </div>
@@ -982,7 +778,7 @@
                     </div>
                     <div class="content">
                         <h2>
-                            <a href="{% url 'places-single-tourisme' %}">thailand</a>
+                            <a href="">thailand</a>
                         </h2>
                         <span>27 minutes drive</span>
                     </div>
