@@ -32,16 +32,12 @@
                 <h2>Nearby Places to Satiate Your Wanderlust.</h2>
             </div>
             <div class="places-wraper">
-                <div class="gap-spase">
-                </div>
-                {% for type in types %}
+                <div class="gap-spase"></div>
+                {% for type in types_institut %}
                 <div class="places-item wow fadeInUp" data-wow-duration="1200ms">
                     <div class="image">
-                        {% if type.image %}
-                        <img src="{{ type.image.url }}" alt="{{ type.name }}">
-                        {% else %}
-                        <img src="{% static 'assets/images/default.jpg' %}" alt="Default Image">
-                        {% endif %}
+                        <img src="{% if type.image %}{{ type.image.url }}{% else %}{% static 'images/placeholder.jpg' %}{% endif %}" 
+                             alt="{{ type.name }}">
                     </div>
                     <div class="content">
                         <h2>
@@ -49,11 +45,14 @@
                         </h2>
                     </div>
                 </div>
+                {% empty %}
+                    <p style="text-align:center; color:red;">Aucun institut trouvé.</p>
                 {% endfor %}
             </div>
         </div>
     </div>
 </section>
+
 <!-- end of places-->
 
 <!-- start of blog-->
@@ -167,5 +166,32 @@
     </div>
 </section>
 <!-- end of blog-->
+
+<style>
+    .places-item .image {
+    width: 150px;       /* Taille fixe du cercle */
+    height: 150px;      /* Taille fixe du cercle */
+    border-radius: 50%; /* Rend l'image circulaire */
+    overflow: hidden;   /* Cache le débordement si l'image dépasse */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 3px solid #e0e0e0; /* Bordure légère (optionnelle) */
+    background-color: #f0f0f0; /* Fond gris clair si image manquante */
+}
+
+.places-item .image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;  /* Adapte l’image pour remplir le cercle */
+    object-position: center; /* Centre l’image */
+    transition: transform 0.3s ease-in-out;
+}
+
+.places-item .image img:hover {
+    transform: scale(1.05); /* Effet zoom léger au survol */
+}
+
+</style>
 
 {% endblock content %}

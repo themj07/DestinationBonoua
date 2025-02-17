@@ -5,8 +5,12 @@ from .models import DefaultPlaceHolderPersonne, Institution, InstitutionType, To
 
 def index(request):
     institutions = Institution.objects.all()  # Récupère toutes les institutions
+    types_tourisme = ToursismeType.objects.all()
+    types_institut = InstitutionType.objects.all()
     datas = {
         'institutions': institutions,
+        'types_tourisme' : types_tourisme,
+        'types_institut' : types_institut,
     }
     return render(request, 'index.html', datas)
 
@@ -29,9 +33,9 @@ def error_404(request):
 
 
 def places_tourismes(request):
-    types = ToursismeType.objects.all()
+    types_tourisme = ToursismeType.objects.all()
     datas = {
-        'types' : types
+        'types_tourisme' : types_tourisme
     }
     return render(request, 'placesTourismes.html', datas)
 
@@ -83,9 +87,9 @@ def hotel_single(request, tourisme_id):
 
 # 🔹 Page listant tous les types d’institutions (ex: Hôpital, Mairie, etc.)
 def places_instituts(request):
-    types = InstitutionType.objects.all()
+    types_institut = InstitutionType.objects.all()
     datas = {
-        'types': types
+        'types_institut': types_institut
     }
     return render(request, 'placesInstituts.html', datas)
 
