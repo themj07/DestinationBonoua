@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, render, redirect
-
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .models import DefaultPlaceHolderPersonne, Institution, InstitutionType, Toursisme, ToursismeType, CommentaireTourisme
 # Create your views here.
 
@@ -54,25 +55,24 @@ def hotel(request, type_id):
 
 
 def hotel_single(request, tourisme_id):
+    """Affiche les détails d'un hôtel et permet d'ajouter un commentaire."""
     tourisme = get_object_or_404(Toursisme, id=tourisme_id)
     commentaires = CommentaireTourisme.objects.filter(tourisme=tourisme)
     other_institutions = Institution.objects.exclude(id=tourisme_id)[:5]
     image_default = DefaultPlaceHolderPersonne.objects.all()
 
     if request.method == "POST":
-        nom = request.POST.get('nom')
-        email = request.POST.get('email')
         note = request.POST.get('stars')  # Récupération de la note
         commentaire = request.POST.get('commentaire')
 
-        if nom and email and note and commentaire:
+        if note and commentaire:
             CommentaireTourisme.objects.create(
                 tourisme=tourisme,
-                nom=nom,
-                email=email,
+                user=request.user,  # ✅ Utilisateur connecté
                 note=int(note),
                 commentaire=commentaire
             )
+            messages.success(request, "Votre commentaire a été ajouté.")
             return redirect('hotel-single', tourisme_id=tourisme.id)  # Rafraîchir la page
 
     datas = {
@@ -82,7 +82,6 @@ def hotel_single(request, tourisme_id):
         'image_default': image_default,
     }
     return render(request, 'hotel-single.html', datas)
-
 
 
 # 🔹 Page listant tous les types d’institutions (ex: Hôpital, Mairie, etc.)

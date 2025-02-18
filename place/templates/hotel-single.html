@@ -139,7 +139,7 @@
                         </div>
                         <div class="review-text">
                             <div class="r-title">
-                                <h2>{{ commentaire.nom }}</h2>
+                                <h2>{{ commentaire.user }}</h2>
                                 <ul style="display: flex; padding: 0; list-style: none;">
                                     {% for i in "12345" %}
                                     {% if forloop.counter <= commentaire.note %} <li
@@ -161,6 +161,7 @@
 
                 </div>
 
+                {% if user.is_authenticated %}
                 <div class="add-review">
                     <div class="room-title">
                         <h2>Donnez votre avis</h2>
@@ -168,7 +169,6 @@
                     <div class="wpo-blog-single-section review-form">
                         <form method="POST" class="comment-form">
                             {% csrf_token %}
-
                             <!-- Section Note (Étoiles) -->
                             <div class="give-rat-sec">
                                 <p>Ajouter une note*</p>
@@ -210,10 +210,11 @@
                             <div class="review-add">
                                 <div class="comment-respond">
                                     <div class="form-inputs" style="display: flex; gap: 15px;">
-                                        <input placeholder="Votre nom*" type="text" name="nom" required
-                                            style="flex: 1; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
-                                        <input placeholder="Votre Email*" type="email" name="email" required
-                                            style="flex: 1; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+                                        <input placeholder="{{ user.username }}" type="text" name="nom" required
+                                            readonly
+                                            style="flex: 1; padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-weight: bold; background-color: #f0f0f0; color: #000;">
+
+
                                     </div>
                                     <div class="form-textarea" style="margin-top: 15px;">
                                         <textarea id="comment" placeholder="Votre commentaire" name="commentaire"
@@ -229,7 +230,16 @@
                         </form>
                     </div>
                 </div>
-
+                {% else %}
+                <div class="form-textarea" style="margin-top: 15px;">
+                    <textarea id="comment" placeholder="Votre commentaire" name="commentaire" required
+                        style="width:100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc;"></textarea>
+                </div>
+                <a href="{% url 'login' %}" 
+                   style="display: inline-block; background-color:#1f2b4d; color:white; padding:12px 25px; border:none; border-radius:25px; font-weight:bold; text-align:center; text-decoration:none; cursor:pointer; margin-top: 20px; display: block;">
+                    SE CONNECTER
+                </a>
+                {% endif %}
             </div>
             <div class="col-lg-4 col-12">
                 <div class="blog-sidebar room-sidebar">

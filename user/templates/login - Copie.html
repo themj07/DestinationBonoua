@@ -1,0 +1,80 @@
+<!-- login.html -->
+{% extends 'bases/baseUser.html' %}
+{% load static %}
+
+{% block content %}
+<div class="wpo-login-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <form class="wpo-accountWrapper" method="POST" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <div class="wpo-accountInfo">
+                        <div class="wpo-accountInfoHeader">
+                            <a href="{% url 'index' %}"><img src="{% static 'assets/images/logo-2.svg' %}" alt=""></a>
+                            <a class="wpo-accountBtn" href="{% url 'register' %}">Create Account</a>
+                        </div>
+                        <div class="image">
+                            <img src="{% static 'assets/images/login.png' %}" alt="">
+                        </div>
+                        <div class="back-home">
+                            <a class="wpo-accountBtn" href="{% url 'index' %}">Back To Home</a>
+                        </div>
+                    </div>
+                    <div class="wpo-accountForm form-style">
+                        <div class="fromTitle">
+                            <h2>Login</h2>
+                            <p>Sign into your account</p>
+                        </div>
+
+                        {% if messages %}
+                            <ul class="messages">
+                                {% for message in messages %}
+                                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                                        {{ message }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-12">
+                                <label>Email or Username</label>
+                                <input type="text" name="email" placeholder="Email or Username" required>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-12">
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <input type="password" name="pass" placeholder="Password" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-12">
+                                <div class="check-box-wrap">
+                                    <div class="input-box">
+                                        <input type="checkbox" id="remember" name="remember">
+                                        <label for="remember">Remember Me</label>
+                                    </div>
+                                    <div class="forget-btn">
+                                        <a href="{% url 'forgot' %}">Forgot Password?</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-12">
+                                <button type="submit" class="wpo-accountBtn">Login</button>
+                            </div>
+                        </div>
+
+                        <h4 class="or"><span>OR</span></h4>
+                        <ul class="wpo-socialLoginBtn">
+                            <li><button class="facebook" type="button"><i class="ti-facebook"></i></button></li>
+                            <li><button class="twitter" type="button"><i class="ti-twitter"></i></button></li>
+                            <li><button class="linkedin" type="button"><i class="ti-linkedin"></i></button></li>
+                        </ul>
+                        <p class="subText">Don't have an account? <a href="{% url 'register' %}">Create free account</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

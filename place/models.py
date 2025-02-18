@@ -1,5 +1,7 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.contrib.auth.models import User
+
 
 # Create your models here.
 
@@ -78,10 +80,15 @@ class Toursisme(models.Model):
         return self.name
 
 
+# models.py
+
+# models.py
+
 class CommentaireTourisme(models.Model):
     tourisme = models.ForeignKey('Toursisme', on_delete=models.CASCADE, related_name="commentaires")
-    nom = models.CharField(max_length=255)
-    email = models.EmailField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="commentaires", null=True, blank=True)
+    nom = models.CharField(max_length=255, blank=True, null=True)
+    email = models.EmailField(default='', blank=True)
     note = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)]
     )
@@ -89,7 +96,7 @@ class CommentaireTourisme(models.Model):
     date_creation = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['-date_creation']  # Afficher les plus récents en premier
+        ordering = ['-date_creation']
 
     def __str__(self):
-        return f"{self.nom} - {self.tourisme.name} ({self.note}⭐)"
+        return f"{self.user.username if self.user else self.nom} - {self.tourisme.name} ({self.note}⭐)"
