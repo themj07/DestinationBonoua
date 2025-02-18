@@ -12,12 +12,102 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password  # ✅ Ajout de l'import manquant
+
 
 
 def forgot(request):
-    datas = {}
-    return render(request, 'forgot.html', datas)
+    """Page Forgot: Génération OTP pour réinitialiser le mot de passe."""
+    if request.method == 'POST':
+        identifier = request.POST.get('email')  # Numéro ou username
 
+        # Recherche par numéro ou username
+        try:
+            profile = UserProfile.objects.get(phone_number=identifier)
+            user = profile.user
+        except UserProfile.DoesNotExist:
+            try:
+                user = User.objects.get(username=identifier)
+            except User.DoesNotExist:
+                messages.error(request, "Aucun utilisateur trouvé avec cet identifiant.")
+                return redirect('forgot')
+
+        # Génération et envoi de l'OTP
+        otp = generate_otp()
+        profile.otp = otp
+        profile.otp_expiry = timezone.now() + timezone.timedelta(minutes=10)
+        profile.save()
+
+        # Stocker l'identifiant dans la session
+        request.session['reset_username'] = user.username
+
+        # Envoi de l’OTP (Console)
+        send_otp_console(profile.phone_number, otp)
+
+        messages.success(request, "Un OTP a été envoyé.")
+        return redirect('verify_forgot')
+
+    return render(request, 'forgot.html')
+
+
+def verify_forgot(request):
+    """Page Vérification OTP pour réinitialiser le mot de passe."""
+    username = request.session.get('reset_username')
+
+    if not username:
+        messages.error(request, "Session expirée. Veuillez réessayer.")
+        return redirect('forgot')
+
+    if request.method == 'POST':
+        otp = request.POST.get('otp')
+
+        try:
+            profile = UserProfile.objects.get(user__username=username)
+        except UserProfile.DoesNotExist:
+            messages.error(request, "Utilisateur introuvable.")
+            return redirect('forgot')
+
+        if profile.is_otp_expired():
+            messages.error(request, "L'OTP a expiré.")
+            return redirect('forgot')
+
+        if profile.otp == otp:
+            profile.otp = None
+            profile.otp_expiry = None
+            profile.save()
+
+            # Redirection vers la réinitialisation
+            messages.success(request, "OTP validé. Veuillez réinitialiser votre mot de passe.")
+            return redirect('reset_password')
+        else:
+            messages.error(request, "OTP incorrect.")
+
+    return render(request, 'verify_forgot.html')
+
+
+def reset_password(request):
+    """Réinitialisation du mot de passe."""
+    username = request.session.get('reset_username')
+    if not username:
+        messages.error(request, "Session expirée. Veuillez réessayer.")
+        return redirect('forgot')
+
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        confirm = request.POST.get('confirm')
+
+        if password != confirm:
+            messages.error(request, "Les mots de passe ne correspondent pas.")
+            return redirect('reset_password')
+
+        user = User.objects.get(username=username)
+        user.password = make_password(password)
+        user.save()
+
+        messages.success(request, "Mot de passe réinitialisé avec succès. Veuillez vous connecter.")
+        return redirect('login')
+
+    return render(request, 'reset_password.html')
 
 
 @login_required
@@ -206,3 +296,6 @@ def verify_otp_login(request):
             messages.error(request, "OTP incorrect. Veuillez réessayer.")
 
     return render(request, 'verify_otp_login.html')
+
+
+
