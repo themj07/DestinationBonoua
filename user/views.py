@@ -75,7 +75,7 @@ def password_reset_request(request):
             user_email = form.cleaned_data['email']
             associated_user = get_user_model().objects.filter(Q(email=user_email)).first()
             if associated_user:
-                subject = "Password Reset request"
+                subject = "Password Reset Request"
                 message = render_to_string("template_reset_password.html", {
                     'user': associated_user,
                     'domain': get_current_site(request).domain,
@@ -83,7 +83,10 @@ def password_reset_request(request):
                     'token': account_activation_token.make_token(associated_user),
                     "protocol": 'https' if request.is_secure() else 'http'
                 })
+                
                 email = EmailMessage(subject, message, to=[associated_user.email])
+                email.content_subtype = "html"  # ⬅️ Ajoute cette ligne pour envoyer en HTML
+                
                 if email.send():
                     messages.success(request,
                         """
@@ -110,7 +113,7 @@ def password_reset_request(request):
         request=request, 
         template_name="reset_password.html", 
         context={"form": form}
-        )
+    )
 
 
 def passwordResetConfirm(request, uidb64, token):
@@ -181,6 +184,7 @@ def activateEmail(request, user, to_email):
         "protocol": 'https' if request.is_secure() else 'http'
     })
     email = EmailMessage(mail_subject, message, to=[to_email])
+    email.content_subtype = "html"
     if email.send():
         messages.success(request, f'Cher {user}, consultez votre adresse {to_email} et cliquez sur \
                 le lien pour completer votre inscription. Note: il pourrait etre dans le dossier spam.')
