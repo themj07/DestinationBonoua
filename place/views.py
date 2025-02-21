@@ -21,18 +21,6 @@ def error_404(request):
     return render(request, '404.html', datas)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 def places_tourismes(request):
     types_tourisme = ToursismeType.objects.all()
     datas = {

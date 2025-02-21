@@ -165,3 +165,20 @@ SESSION_SAVE_EVERY_REQUEST = True
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_USE_TLS = EMAIL_USE_TLS
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_FROM = 'destinationbonoua@gmail.com'
+EMAIL_HOST_USER = 'destinationbonoua@gmail.com'
+EMAIL_HOST_PASSWORD = 'zldr qhea zwbp icrr '
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+
+
+
+

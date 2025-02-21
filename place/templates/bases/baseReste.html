@@ -1,5 +1,6 @@
 {% load static %}
 
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -205,11 +206,11 @@
                             <div class="col-lg-3 col-md-4 col-4">
                                 <div class="header-right">
                                     <div class="language">
-                                        <select>
-                                            <option value="" selected>English</option>
-                                            <option value="">Spanish</option>
-                                            <option value="">German</option>
-                                            <option value="">Arabic</option>
+                                        <select id="language-selector">
+                                            <option value="fr" selected>Français</option>
+                                            <option value="en">English (soon)</option>
+                                            <!-- <option value="de">German</option>
+                                            <option value="ar">Arabic</option> -->
                                         </select>
                                     </div>
                                     <!-- Dans votre template (par exemple, hotel-single.html) -->
@@ -426,6 +427,7 @@
     <script src="{% static 'assets/js/jquery-plugin-collection.js' %}"></script>
     <!-- Custom script for this template -->
     <script src="{% static 'assets/js/script.js' %}"></script>
+    <script src="{% static 'assets/js/language.js' %}"></script>
 </body>
 
 

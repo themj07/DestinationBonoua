@@ -1,301 +1,188 @@
+from blog.models import *
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.contrib.auth import login, logout
+from django.contrib import messages
+from django.core.mail import EmailMessage
 from django.shortcuts import render, redirect
-from django.contrib.auth import logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
-from django.contrib import messages
-from django.utils import timezone
-from .models import UserProfile
-from .utils import generate_otp, send_otp_console
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from django.contrib import messages
-from django.contrib.auth.models import User
-from django.contrib.auth.hashers import make_password  # ✅ Ajout de l'import manquant
+from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.encoding import force_bytes, force_str
+from django.db.models.query_utils import Q
+from .forms import UserRegistrationForm , SetPasswordForm, PasswordResetForm, UserLoginForm
+from .tokens import account_activation_token
+from django.contrib.auth import authenticate
+from django.contrib.auth import get_user_model
+from .forms import UserUpdateForm
 
 
+def activate(request, uidb64, token):
+    User = get_user_model()
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except:
+        user = None
 
-def forgot(request):
-    """Page Forgot: Génération OTP pour réinitialiser le mot de passe."""
-    if request.method == 'POST':
-        identifier = request.POST.get('email')  # Numéro ou username
-
-        # Recherche par numéro ou username
-        try:
-            profile = UserProfile.objects.get(phone_number=identifier)
-            user = profile.user
-        except UserProfile.DoesNotExist:
-            try:
-                user = User.objects.get(username=identifier)
-            except User.DoesNotExist:
-                messages.error(request, "Aucun utilisateur trouvé avec cet identifiant.")
-                return redirect('forgot')
-
-        # Génération et envoi de l'OTP
-        otp = generate_otp()
-        profile.otp = otp
-        profile.otp_expiry = timezone.now() + timezone.timedelta(minutes=10)
-        profile.save()
-
-        # Stocker l'identifiant dans la session
-        request.session['reset_username'] = user.username
-
-        # Envoi de l’OTP (Console)
-        send_otp_console(profile.phone_number, otp)
-
-        messages.success(request, "Un OTP a été envoyé.")
-        return redirect('verify_forgot')
-
-    return render(request, 'forgot.html')
-
-
-def verify_forgot(request):
-    """Page Vérification OTP pour réinitialiser le mot de passe."""
-    username = request.session.get('reset_username')
-
-    if not username:
-        messages.error(request, "Session expirée. Veuillez réessayer.")
-        return redirect('forgot')
-
-    if request.method == 'POST':
-        otp = request.POST.get('otp')
-
-        try:
-            profile = UserProfile.objects.get(user__username=username)
-        except UserProfile.DoesNotExist:
-            messages.error(request, "Utilisateur introuvable.")
-            return redirect('forgot')
-
-        if profile.is_otp_expired():
-            messages.error(request, "L'OTP a expiré.")
-            return redirect('forgot')
-
-        if profile.otp == otp:
-            profile.otp = None
-            profile.otp_expiry = None
-            profile.save()
-
-            # Redirection vers la réinitialisation
-            messages.success(request, "OTP validé. Veuillez réinitialiser votre mot de passe.")
-            return redirect('reset_password')
-        else:
-            messages.error(request, "OTP incorrect.")
-
-    return render(request, 'verify_forgot.html')
-
-
-def reset_password(request):
-    """Réinitialisation du mot de passe."""
-    username = request.session.get('reset_username')
-    if not username:
-        messages.error(request, "Session expirée. Veuillez réessayer.")
-        return redirect('forgot')
-
-    if request.method == 'POST':
-        password = request.POST.get('password')
-        confirm = request.POST.get('confirm')
-
-        if password != confirm:
-            messages.error(request, "Les mots de passe ne correspondent pas.")
-            return redirect('reset_password')
-
-        user = User.objects.get(username=username)
-        user.password = make_password(password)
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
         user.save()
 
-        messages.success(request, "Mot de passe réinitialisé avec succès. Veuillez vous connecter.")
+        messages.success(request, "Thank you for your email confirmation. Now you can login your account.")
         return redirect('login')
+    else:
+        messages.error(request, "Activation link is invalid!")
 
-    return render(request, 'reset_password.html')
+    return redirect('index')
+
+
+def register(request):
+    if request.method == "POST":
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_active=False
+            user.save()
+            activateEmail(request, user, form.cleaned_data.get('email'))
+            return redirect('login')
+
+        else:
+            for error in list(form.errors.values()):
+                messages.error(request, error)
+
+    else:
+        form = UserRegistrationForm()
+
+    return render(
+        request=request,
+        template_name="register.html",
+        context={"form": form}
+        )
 
 
 @login_required
-def user_logout(request):
+def custom_logout(request):
     logout(request)
     messages.info(request, "Logged out successfully!")
     return redirect("index")
 
 
-def register(request):
-    """Inscription et génération d’OTP"""
+def password_reset_request(request):
     if request.method == 'POST':
-        username = request.POST.get('username')  # ✅ Ajoutez ceci
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        phone_number = request.POST.get('phone_number')
-        password = request.POST.get('password')
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            user_email = form.cleaned_data['email']
+            associated_user = get_user_model().objects.filter(Q(email=user_email)).first()
+            if associated_user:
+                subject = "Password Reset request"
+                message = render_to_string("template_reset_password.html", {
+                    'user': associated_user,
+                    'domain': get_current_site(request).domain,
+                    'uid': urlsafe_base64_encode(force_bytes(associated_user.pk)),
+                    'token': account_activation_token.make_token(associated_user),
+                    "protocol": 'https' if request.is_secure() else 'http'
+                })
+                email = EmailMessage(subject, message, to=[associated_user.email])
+                if email.send():
+                    messages.success(request,
+                        """
+                        <h2>Password reset sent</h2><hr>
+                        <p>
+                            We've emailed you instructions for setting your password, if an account exists with the email you entered. 
+                            You should receive them shortly.<br>If you don't receive an email, please make sure you've entered the address 
+                            you registered with, and check your spam folder.
+                        </p>
+                        """
+                    )
+                else:
+                    messages.error(request, "Problem sending reset password email, <b>SERVER PROBLEM</b>")
 
-        if not username:
-            messages.error(request, "Le nom d'utilisateur est requis.")
-            return redirect('register')
+            return redirect('index')
 
-        if User.objects.filter(username=username).exists():
-            messages.error(request, "Nom d'utilisateur déjà pris.")
-            return redirect('register')
+        for key, error in list(form.errors.items()):
+            if key == 'captcha' and error[0] == 'This field is required.':
+                messages.error(request, "You must pass the reCAPTCHA test")
+                continue
 
-        if UserProfile.objects.filter(phone_number=phone_number).exists():
-            messages.error(request, "Numéro de téléphone déjà utilisé.")
-            return redirect('register')
-
-        # ✅ Correction : Utiliser `create_user` avec `username`
-        user = User.objects.create_user(
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            password=password
+    form = PasswordResetForm()
+    return render(
+        request=request, 
+        template_name="reset_password.html", 
+        context={"form": form}
         )
 
-        otp = generate_otp()
-        otp_expiry = timezone.now() + timezone.timedelta(minutes=10)
 
-        UserProfile.objects.create(
-            user=user,
-            phone_number=phone_number,
-            otp=otp,
-            otp_expiry=otp_expiry
-        )
-
-        request.session['phone_number'] = phone_number
-
-        # Affiche l’OTP dans la console
-        send_otp_console(phone_number, otp)
-
-        messages.success(request, "Un OTP a été généré (voir la console).")
-        return redirect('verify_otp')
-
-    return render(request, 'register.html')
-
-
-def verify_otp(request):
-    """Vérification de l’OTP (session)"""
-    phone_number = request.session.get('phone_number')
-
-    if not phone_number:
-        messages.error(request, "Session expirée. Veuillez vous réinscrire.")
-        return redirect('register')
-
-    if request.method == 'POST':
-        otp = request.POST.get('otp')
-
-        try:
-            profile = UserProfile.objects.get(phone_number=phone_number)
-        except UserProfile.DoesNotExist:
-            messages.error(request, "Profil non trouvé.")
-            return redirect('verify_otp')
-
-        if profile.is_otp_expired():
-            messages.error(request, "L'OTP a expiré. Veuillez réessayer.")
-            return redirect('verify_otp')
-
-        if profile.otp == otp:
-            profile.is_phone_verified = True
-            profile.otp = None
-            profile.otp_expiry = None
-            profile.save()
-
-            messages.success(request, "Vérification réussie. Vous pouvez vous connecter.")
-            return redirect('login')
-        else:
-            messages.error(request, "OTP incorrect.")
-            return redirect('verify_otp')
-
-    return render(request, 'verify_otp.html')
-
-
-def get_user_by_identifier(identifier):
-    """Recherche l'utilisateur par numéro ou username."""
+def passwordResetConfirm(request, uidb64, token):
+    User = get_user_model()
     try:
-        profile = UserProfile.objects.get(phone_number=identifier)
-        return profile.user
-    except UserProfile.DoesNotExist:
-        try:
-            return User.objects.get(username=identifier)
-        except User.DoesNotExist:
-            return None
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except:
+        user = None
 
-
-def user_login(request):
-    """Connexion avec numéro ou username + Envoi OTP."""
-    if request.method == 'POST':
-        identifier = request.POST.get('identifier')  # Numéro ou username
-        password = request.POST.get('password')
-
-        user = get_user_by_identifier(identifier)
-
-        if user is None:
-            messages.error(request, "Utilisateur introuvable.")
-            return redirect('login')
-
-        # Vérification du mot de passe
-        authenticated_user = authenticate(request, username=user.username, password=password)
-        if authenticated_user is not None:
-            # Générer et sauvegarder l'OTP
-            profile = UserProfile.objects.get(user=user)
-            otp = generate_otp()
-            profile.otp = otp
-            profile.otp_expiry = timezone.now() + timezone.timedelta(minutes=10)
-            profile.save()
-
-            # Enregistrer dans la session pour vérification
-            request.session['username'] = user.username
-
-            # Envoyer l’OTP dans la console
-            send_otp_console(profile.phone_number, otp)
-
-            messages.success(request, "Un OTP a été envoyé. Vérifiez votre téléphone.")
-            return redirect('verify_otp_login')
-        else:
-            messages.error(request, "Mot de passe incorrect.")
-            return redirect('login')
-
-    return render(request, 'login.html')
-
-
-
-def verify_otp_login(request):
-    """Vérification OTP et connexion."""
-    username = request.session.get('username')
-
-    if not username:
-        messages.error(request, "Session expirée. Veuillez vous reconnecter.")
-        return redirect('login')
-
-    if request.method == 'POST':
-        otp = request.POST.get('otp')
-
-        try:
-            profile = UserProfile.objects.get(user__username=username)
-        except UserProfile.DoesNotExist:
-            messages.error(request, "Utilisateur introuvable.")
-            return redirect('login')
-
-        if profile.is_otp_expired():
-            messages.error(request, "L'OTP a expiré. Veuillez réessayer.")
-            return redirect('login')
-
-        if profile.otp == otp:
-            profile.otp = None
-            profile.otp_expiry = None
-            profile.save()
-
-            user = profile.user
-
-            # ✅ Forcer l’authentification avec le backend par défaut
-            user.backend = 'django.contrib.auth.backends.ModelBackend'
-            login(request, user)
-
-            if request.user.is_authenticated:
-                messages.success(request, "Connexion réussie.")
-                return redirect('index')
-            else:
-                messages.error(request, "Erreur lors de la connexion.")
+    if user is not None and account_activation_token.check_token(user, token):
+        if request.method == 'POST':
+            form = SetPasswordForm(user, request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Your password has been set. You may go ahead and <b>log in </b> now.")
                 return redirect('login')
+            else:
+                for error in list(form.errors.values()):
+                    messages.error(request, error)
+
+        form = SetPasswordForm(user)
+        return render(request, 'reset_password_confirm.html', {'form': form})
+    else:
+        messages.error(request, "Link is expired")
+
+    messages.error(request, 'Something went wrong, redirecting back to Homepage')
+    return redirect("index")
+
+
+def custom_login(request):
+    if request.method == "POST":
+        form = UserLoginForm(request=request, data=request.POST)
+        if form.is_valid():
+            user = authenticate(
+                username=form.cleaned_data["username"],
+                password=form.cleaned_data["password"],
+            )
+            if user is not None:
+                login(request, user) 
+                messages.success(request, f"Hello <b>{user.username}</b>! You have been logged in")
+                return redirect("index")
 
         else:
-            messages.error(request, "OTP incorrect. Veuillez réessayer.")
+            for key, error in list(form.errors.items()):
+                if key == 'captcha' and error[0] == 'This field is required.':
+                    messages.error(request, "You must pass the reCAPTCHA test")
+                    continue
+                
+                messages.error(request, error) 
 
-    return render(request, 'verify_otp_login.html')
+    form = UserLoginForm()
+
+    return render(
+        request=request,
+        template_name="login.html",
+        context={"form": form}
+        )
 
 
-
+def activateEmail(request, user, to_email):
+    mail_subject = "Activate your user account."
+    message = render_to_string("template_activate_account.html", {
+        'user': user.username,
+        'domain': get_current_site(request).domain,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': account_activation_token.make_token(user),
+        "protocol": 'https' if request.is_secure() else 'http'
+    })
+    email = EmailMessage(mail_subject, message, to=[to_email])
+    if email.send():
+        messages.success(request, f'Cher {user}, consultez votre adresse {to_email} et cliquez sur \
+                le lien pour completer votre inscription. Note: il pourrait etre dans le dossier spam.')
+    else:
+        messages.error(request, f'Problem sending email to {to_email}, check if you typed it correctly.')
