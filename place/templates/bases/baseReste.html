@@ -164,23 +164,7 @@
                                         </li>
                                         <li
                                             class="menu-item-has-children {% if '/blog' in request.path %}active{% endif %}">
-                                            <a href="#">Blog</a>
-                                            <ul class="sub-menu">
-                                                <li class="{% if request.path == '/blog/' %}active{% endif %}">
-                                                    <a href="{% url 'blogs' %}">Blog Right Sidebar</a>
-                                                </li>
-                                                <li
-                                                    class="menu-item-has-children {% if '/blog-single' in request.path %}active{% endif %}">
-                                                    <a href="#">Blog Details</a>
-                                                    <ul class="sub-menu">
-                                                        <li
-                                                            class="{% if request.path == '/blog-single/' %}active{% endif %}">
-                                                            <a href="{% url 'blog-single' %}">Blog Details Right
-                                                                Sidebar</a>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                            </ul>
+                                            <a href="{% url 'blogs' %}">Blog</a>
                                         </li>
                                         <li class="{% if request.path == '/about/' %}active{% endif %}">
                                             <a href="{% url 'about' %}">About Us</a>
