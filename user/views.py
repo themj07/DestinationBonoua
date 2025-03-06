@@ -3,7 +3,7 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.auth import login, logout
 from django.contrib import messages
 from django.core.mail import EmailMessage
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
@@ -14,8 +14,13 @@ from .forms import UserRegistrationForm , SetPasswordForm, PasswordResetForm, Us
 from .tokens import account_activation_token
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
-from .forms import UserUpdateForm
-
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
+from django.conf import settings
+from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import send_mail
+from .models import NewsletterSubscriber
 
 def activate(request, uidb64, token):
     User = get_user_model()
@@ -190,3 +195,68 @@ def activateEmail(request, user, to_email):
                 le lien pour completer votre inscription. Note: il pourrait etre dans le dossier spam.')
     else:
         messages.error(request, f'Problem sending email to {to_email}, check if you typed it correctly.')
+
+
+def subscribe_newsletter(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')  # Récupère l'email du formulaire
+
+        # Vérifier si l'email est déjà enregistré
+        if NewsletterSubscriber.objects.filter(email=email).exists():
+            messages.warning(request, 'Cet email est déjà enregistré !')
+        else:
+            # Enregistrer l'email dans la base de données
+            NewsletterSubscriber.objects.create(email=email)
+
+            # Récupérer le protocole et le domaine
+            current_site = get_current_site(request)
+            protocol = 'https' if request.is_secure() else 'http'
+            domain = current_site.domain
+
+            # Contexte pour le template HTML
+            context = {
+                'email': email,
+                'protocol': protocol,
+                'domain': domain,
+            }
+
+            # Charger et rendre le template HTML
+            html_message = render_to_string('newsletter_confirmation.html', context)
+
+            # Envoyer un email de confirmation
+            subject = 'Confirmation d\'inscription à la newsletter'
+            message = 'Merci de vous être inscrit à notre newsletter !'  # Version texte brut
+            from_email = settings.DEFAULT_FROM_EMAIL
+            recipient_list = [email]
+
+            try:
+                send_mail(
+                    subject,
+                    message,
+                    from_email,
+                    recipient_list,
+                    html_message=html_message  # Utiliser le template HTML comme corps de l'email
+                )
+                messages.success(request, 'Vous êtes maintenant inscrit à notre newsletter !')
+            except Exception as e:
+                messages.error(request, f'Une erreur s\'est produite : {e}')
+
+        # Rediriger l'utilisateur vers la page précédente ou une page de confirmation
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+    # Si la méthode n'est pas POST, rediriger vers la page d'accueil
+    return HttpResponseRedirect('/')
+
+
+def unsubscribe_newsletter(request, email):
+    # Récupérer l'abonné ou renvoyer une erreur 404 si non trouvé
+    subscriber = get_object_or_404(NewsletterSubscriber, email=email)
+
+    # Supprimer l'abonné de la base de données
+    subscriber.delete()
+
+    # Afficher un message de confirmation
+    messages.success(request, 'Vous avez été désabonné de notre newsletter.')
+
+    # Rediriger vers la page d'accueil ou une page de confirmation
+    return HttpResponseRedirect('/')

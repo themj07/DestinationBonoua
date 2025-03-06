@@ -1,7 +1,14 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.mail import send_mail
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
+from django.conf import settings
+from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
+
 from .models import DefaultPlaceHolderPersonne, Institution, InstitutionType, Toursisme, ToursismeType, CommentaireTourisme
+
 # Create your views here.
 
 def index(request):
@@ -125,3 +132,7 @@ def service_s2(request):
 def service_single(request):
     datas = {}
     return render(request, 'service-single.html', datas)
+
+
+
+

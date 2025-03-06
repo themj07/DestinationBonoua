@@ -354,14 +354,15 @@
                                 <div class="widget-title">
                                     <h3>subscribe newsletter:</h3>
                                 </div>
-                                <form>
-                                    <input type="text" class="form-control" placeholder="Enter your email:">
+                                <form method="post" action="{% url 'subscribe_newsletter' %}">
+                                    {% csrf_token %}
+                                    <input type="text" class="form-control" name="email"
+                                        placeholder="Enter your email:">
                                     <input class="theme-btn-s2" type="submit" value="subscribe now">
                                     <label class="checkbox">
                                         <input class="checks" type="checkbox" />
                                         <span>I agree to email receive.</span>
                                     </label>
-
                                 </form>
                             </div>
                         </div>

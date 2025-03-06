@@ -10,3 +10,4 @@ admin.site.register(DefaultPlaceHolderPersonne)
 admin.site.register(ToursismeType)
 admin.site.register(Toursisme)
 admin.site.register(CommentaireTourisme)
+
