@@ -1,6 +1,5 @@
 {% extends 'bases/baseReste.html' %}
 
-
 {% load static %}
 
 {% block content %}
@@ -11,10 +10,10 @@
         <div class="row">
             <div class="col-12">
                 <div class="wpo-breadcumb-wrap">
-                    <h2>Instituts</h2>
+                    <h2>Institutions</h2>
                     <ul>
-                        <li><a href="{% url 'index' %}">Home</a></li>
-                        <li><span>Instituts</span></li>
+                        <li><a href="{% url 'index' %}">Accueil</a></li>
+                        <li><span>Institutions</span></li>
                     </ul>
                 </div>
             </div>
@@ -29,8 +28,8 @@
         <div class="row justify-content-center">
             <div class="col-lg-10 col-12">
                 <div class="wpo-section-title s2">
-                    <span>// featured hotels</span>
-                    <h2>Discover the World's Most Captivating Featured Places</h2>
+                    <span>// institutions locales</span>
+                    <h2>Découvrez nos institutions, départements publiques et privés</h2>
                 </div>
             </div>
         </div>
@@ -39,12 +38,19 @@
             <div class="col-xl-3 col-lg-4 col-md-6 col-12 custom-grid all zoomIn" data-wow-duration="2000ms">
                 <div class="featured-card">
                     <div class="image">
-                        <img src="{{ institution.image.url }}" alt="{{ institution.name }}">
+                        <img src="{{ institution.image.url }}" alt="{{ institution.name }}" 
+                             style="height: 200px; object-fit: cover; width: 100%;">
                     </div>
                     <div class="content">
                         <h2><a href="{% url 'places-single-institut' institution.id %}">{{ institution.name }}</a></h2>
-                        <span><i class="ti-location-pin"></i> {{ institution.address }}</span>
+                        <span><i class="ti-location-pin"></i> {{ institution.address|truncatechars:30 }}</span>
                     </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="alert alert-info">
+                    Aucune institution disponible pour le moment.
                 </div>
             </div>
             {% endfor %}
@@ -52,5 +58,53 @@
     </div>
 </section>
 <!-- end of featured-->
+
+<style>
+    .featured-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        margin-bottom: 30px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .featured-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    }
+    
+    .featured-card .image {
+        height: 200px;
+        overflow: hidden;
+    }
+    
+    .featured-card .content {
+        padding: 20px;
+        background: #fff;
+    }
+    
+    .featured-card h2 {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+    
+    .featured-card h2 a {
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .featured-card span {
+        color: #666;
+        font-size: 14px;
+    }
+    
+    .alert-info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+        border-color: #bee5eb;
+        padding: 15px;
+        border-radius: 4px;
+    }
+</style>
 
 {% endblock content %}

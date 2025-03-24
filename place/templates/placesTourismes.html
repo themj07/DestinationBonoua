@@ -1,172 +1,151 @@
 {% extends 'bases/baseReste.html' %}
 
-
 {% load static %}
 
 {% block content %}
 
-        <!-- start of breadcumb-section -->
-        <div class="wpo-breadcumb-area">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="wpo-breadcumb-wrap">
-                            <h2>Places tourisme</h2>
-                            <ul>
-                                <li><a href="{% url 'index' %}">Home</a></li>
-                                <li><span>Places tourisme</span></li>
-                            </ul>
-                        </div>
-                    </div>
+<!-- start of breadcumb-section -->
+<div class="wpo-breadcumb-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="wpo-breadcumb-wrap">
+                    <h2>Sites touristiques</h2>
+                    <ul>
+                        <li><a href="{% url 'index' %}">Accueil</a></li>
+                        <li><span>Tourisme</span></li>
+                    </ul>
                 </div>
             </div>
         </div>
-        <!-- end of wpo-breadcumb-section-->
+    </div>
+</div>
+<!-- end of wpo-breadcumb-section-->
 
-        <!-- start of places-->
-        <section class="places-section section-padding">
-            <div class="container">
-                <div class="wraper">
-                    <div class="wpo-section-title s2 wow fadeInLeftSlow" data-wow-duration="1700ms">
-                        <span>// nearby places</span>
-                        <h2>Nearby Places to Satiate Your Wanderlust.</h2>
+<!-- start of places-->
+<section class="places-section section-padding">
+    <div class="container">
+        <div class="wraper">
+            <div class="wpo-section-title s2 wow fadeInLeftSlow" data-wow-duration="1700ms">
+                <span>// lieux touristiques</span>
+                <h2>Découvrez les trésors de Bonoua</h2>
+            </div>
+            <div class="places-wraper">
+                <div class="gap-spase"></div>
+                
+                {% for type in types_tourisme %}
+                <div class="places-item wow fadeInUp" data-wow-duration="1200ms">
+                    <div class="image">
+                        <img src="{% if type.image %}{{ type.image.url }}{% else %}{% static 'images/placeholder.jpg' %}{% endif %}" 
+                             alt="{{ type.name }}">
                     </div>
-                    <div class="places-wraper">
-                        <div class="gap-spase"></div>
-                        
-                        {% for type in types_tourisme %}
-                        <div class="places-item wow fadeInUp" data-wow-duration="1200ms">
-                            <div class="image">
-                                <img src="{% if type.image %}{{ type.image.url }}{% else %}{% static 'images/placeholder.jpg' %}{% endif %}" 
-                                     alt="{{ type.name }}">
-                            </div>
-                            <div class="content">
-                                <h2>
-                                    <a href="{% url 'hotel' type.id %}">{{ type.name }}</a>
-                                </h2>
-                            </div>
+                    <div class="content">
+                        <h2>
+                            <a href="{% url 'hotel' type.id %}">{{ type.name }}</a>
+                        </h2>
+                    </div>
+                </div>
+                {% empty %}
+                    <p style="text-align:center; color:red;">Aucun lieu touristique trouvé.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- end of places-->
+
+<section class="blog-section section-padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-12">
+                <div class="wpo-section-title s2 wow fadeInUp" data-wow-duration="1200ms">
+                    <span>// actualités</span>
+                    <h2>Restez informés</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            {% for blog in all_blogs %}
+            <div class="col-lg-4 col-md-6 col-12">
+                <div class="blog-card wow fadeInUp" data-wow-duration="1900ms">
+                    <div class="image">
+                        <img src="{{ blog.image.url }}" alt="{{ blog.title }}">
+                    </div>
+                    <div class="content">
+                        <div class="top-content">
+                            <ul>
+                                <li>
+                                    <span>{{ blog.created_at|date:"d M Y" }}</span>
+                                    <span class="date">Date</span>
+                                </li>
+                                <li>
+                                    <span>{{ blog.comment_count }}</span>
+                                    <span class="date">Commentaires</span>
+                                </li>
+
+                            </ul>
                         </div>
-                        {% empty %}
-                            <p style="text-align:center; color:red;">Aucun lieu trouvé.</p>
-                        {% endfor %}
+                        <div class="text">
+                            <h2>
+                                <a href="{% url 'blog-single' blog.id %}">{{ blog.title }}</a>
+                            </h2>
+                            <a href="{% url 'blog-single' blog.id %}" class="blog-btn">Lire plus</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </section>
+            {% empty %}
+            <div class="alert alert-info">
+                Aucun article de blog disponible pour le moment.
+            </div>
+            {% endfor %}
+        </div>
         
-        <!-- end of places-->
+    </div>
+</section>
+<!-- end of blog-->
+<style>
+    /* Styles pour les éléments de la populaire slider */
+    .popular-slider .places-item .image,
+    .places-wraper .places-item .image {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%; /* Garde le cadre circulaire */
+        overflow: hidden; /* Assure que les parties débordantes de l'image sont cachées */
+        display: flex;
+        justify-content: center; /* Centre l'image horizontalement */
+        align-items: center; /* Centre l'image verticalement */
+        background-color: #f0f0f0;
+        border: 2px solid #ddd; /* Ajoute une bordure autour du cadre */
+        transition: transform 0.3s ease-in-out;
+    }
 
-        <!-- start of blog-->
-        <section class="blog-section section-padding">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-10 col-12">
-                        <div class="wpo-section-title s2 wow fadeInUp" data-wow-duration="1200ms">
-                            <span>// latest news</span>
-                            <h2>oin Our Blog for Travel Stories That Fuel Your Adventurous Spirit.</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-4 col-md-6 col-12">
-                        <div class="blog-card wow fadeInUp" data-wow-duration="1500ms">
-                            <div class="image">
-                                <img src="{% static 'assets/images/blog/img-1.jpg' %}" alt="">
-                            </div>
-                            <div class="content">
-                                <div class="top-content">
-                                    <ul>
-                                        <li>
-                                            <span>24 SEP 2023</span>
-                                            <span class="date">DATE</span>
-                                        </li>
-                                        <li>
-                                            <span>02K</span>
-                                            <span class="date">Comment</span>
-                                        </li>
-                                        <li>
-                                            <span>02K</span>
-                                            <span class="date">Comment</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="text">
-                                    <h2>
-                                        <a href="">Hotels Amidst Nature's Bounty for Nature
-                                            Enthusiasts.</a>
-                                    </h2>
-                                    <a href="" class="blog-btn">read more</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 col-12">
-                        <div class="blog-card wow fadeInUp" data-wow-duration="1700ms">
-                            <div class="image">
-                                <img src="{% static 'assets/images/blog/img-2.jpg' %}" alt="">
-                            </div>
-                            <div class="content">
-                                <div class="top-content">
-                                    <ul>
-                                        <li>
-                                            <span>24 SEP 2023</span>
-                                            <span class="date">DATE</span>
-                                        </li>
-                                        <li>
-                                            <span>02K</span>
-                                            <span class="date">Comment</span>
-                                        </li>
-                                        <li>
-                                            <span>02K</span>
-                                            <span class="date">Comment</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="text">
-                                    <h2>
-                                        <a href="">Chic Boutique Hotels to Elevate Your Stay.</a>
-                                    </h2>
-                                    <a href="" class="blog-btn">read more</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 col-12">
-                        <div class="blog-card wow fadeInUp" data-wow-duration="1900ms">
-                            <div class="image">
-                                <img src="{% static 'assets/images/blog/img-3.jpg' %}" alt="">
-                            </div>
-                            <div class="content">
-                                <div class="top-content">
-                                    <ul>
-                                        <li>
-                                            <span>24 SEP 2023</span>
-                                            <span class="date">DATE</span>
-                                        </li>
-                                        <li>
-                                            <span>02K</span>
-                                            <span class="date">Comment</span>
-                                        </li>
-                                        <li>
-                                            <span>02K</span>
-                                            <span class="date">Comment</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="text">
-                                    <h2>
-                                        <a href="">Experience 5-Star Stays Without Breaking the
-                                            Bank.</a>
-                                    </h2>
-                                    <a href="" class="blog-btn">read more</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- end of blog-->
+    /* Application du style pour les images */
+    .popular-slider .places-item .image img,
+    .places-wraper .places-item .image img {
+        width: 100%;  /* Remplie toute la largeur du cadre */
+        height: 100%; /* Remplie toute la hauteur du cadre */
+        object-fit: cover; /* Remplir le cadre sans déformation */
+        object-position: center; /* Centre l'image dans le cadre */
+        transition: transform 0.3s ease-in-out;
+    }
+
+    /* Effet de zoom sur les images au survol */
+    .popular-slider .places-item .image img:hover,
+    .places-wraper .places-item .image img:hover {
+        transform: scale(1.05);
+    }
+
+    /* Style pour les éléments dans le wrapper */
+    .places-wraper .places-item,
+    .popular-slider .places-item {
+        text-align: center; /* Centre le texte et les éléments */
+        margin-bottom: 20px;
+    }
+</style>
+<!-- end of blog-->
+
 <style>
     .places-item .image {
     width: 150px;       /* Taille fixe du cercle */
@@ -184,14 +163,13 @@
 .places-item .image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;    /* L’image remplit le cercle sans distorsion */
-    object-position: center; /* Centre l’image */
+    object-fit: cover;    /* L'image remplit le cercle sans distorsion */
+    object-position: center; /* Centre l'image */
     transition: transform 0.3s ease-in-out;
 }
 
 .places-item .image img:hover {
     transform: scale(1.05);  /* Zoom léger au survol */
 }
-
 </style>
 {% endblock content %}

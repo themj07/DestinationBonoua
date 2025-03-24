@@ -1,6 +1,5 @@
 {% extends 'bases/baseReste.html' %}
 
-
 {% load static %}
 
 {% block content %}
@@ -9,41 +8,44 @@
     /* Styles pour adapter les images aux cadres */
     .image-container {
         width: 100%;
-        /* Prend toute la largeur du parent */
         max-width: 600px;
-        /* Taille maximale pour éviter le débordement */
         height: 400px;
-        /* Hauteur fixe */
         overflow: hidden;
-        /* Cache les parties débordantes */
         display: flex;
         justify-content: center;
         align-items: center;
         border: 2px solid #ddd;
-        /* Optionnel : Ajoute un cadre */
         border-radius: 10px;
-        /* Coins arrondis */
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
     }
 
-    /* Appliquer la propriété d'ajustement */
+    .image-container:hover {
+        transform: translateY(-5px);
+    }
+
     .image-container img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        /* Remplit le cadre sans déformer l'image */
-        border-radius: 10px;
-        /* Respecte les coins arrondis */
+        border-radius: 8px;
+        transition: transform 0.5s ease;
+    }
+
+    .image-container img:hover {
+        transform: scale(1.05);
     }
 </style>
+
 <!-- start of breadcumb-section -->
 <div class="wpo-breadcumb-area">
     <div class="container">
         <div class="row">
             <div class="col-12">
                 <div class="wpo-breadcumb-wrap">
-                    <h2>Blog</h2>
+                    <h2>Actualités</h2>
                     <ul>
-                        <li><a href="{% url 'index' %}">Home</a></li>
+                        <li><a href="{% url 'index' %}">Accueil</a></li>
                         <li><span>Blog</span></li>
                     </ul>
                 </div>
@@ -63,131 +65,81 @@
                     <div class="post format-standard-image">
                         <div class="entry-media">
                             <div class="image-container">
-                                <img src="{{ blog.image.url }}" alt>
+                                <img src="{{ blog.image.url }}" alt="{{ blog.title }}">
                             </div>
                         </div>
                         <div class="entry-meta">
                             <ul>
-                                <li><i class="fi flaticon-user"></i> By <a href="#">{{ blog.author }}</a>
-                                </li>
-                                <li><i class="fi flaticon-comment-white-oval-bubble"></i>  {{ blog.comment_count }} Commentaires 
-                                </li>
-                                <li><i class="fi flaticon-calendar"></i> {{ blog.created_at }}</li>
+                                <li><i class="fi flaticon-user"></i> Par <a href="#">{{ blog.author }}</a></li>
+                                <li><i class="fi flaticon-comment-white-oval-bubble"></i> {{ blog.comment_count }} Commentaires</li>
+                                <li><i class="fi flaticon-calendar"></i> {{ blog.created_at|date:"d F Y" }}</li>
                             </ul>
                         </div>
                         <div class="entry-details">
-                            <h3><a href="{% url 'blog-single' blog.id %}">{{ blog.title }}.</a></h3>
+                            <h3><a href="{% url 'blog-single' blog.id %}">{{ blog.title }}</a></h3>
                             <p>{{ blog.content|truncatewords:30 }}</p>
-                            <a href="{% url 'blog-single' blog.id %}" class="read-more">Read More...</a>
+                            <a href="{% url 'blog-single' blog.id %}" class="read-more">Lire la suite...</a>
                         </div>
+                    </div>
+                    {% empty %}
+                    <div class="alert alert-info">
+                        Aucun article de blog disponible pour le moment.
                     </div>
                     {% endfor %}
                 </div>
             </div>
             <div class="col col-lg-4">
                 <div class="blog-sidebar">
-                    <div class="widget about-widget">
-                        <div class="img-holder">
-                            <img src="{% static 'assets/images/blog/about-widget.jpg' %}" alt>
-                        </div>
-                        <h4>Jenny Watson</h4>
-                        <p>Hi! beautiful people. I`m an authtor of this blog. Read our post - stay with us</p>
-                        <div class="social">
-                            <ul class="clearfix">
-                                <li><a href="#"><i class="ti-facebook"></i></a></li>
-                                <li><a href="#"><i class="ti-twitter-alt"></i></a></li>
-                                <li><a href="#"><i class="ti-linkedin"></i></a></li>
-                                <li><a href="#"><i class="ti-pinterest"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
                     <div class="widget search-widget">
                         <form>
                             <div>
-                                <input type="text" class="form-control" placeholder="Search Post..">
+                                <input type="text" class="form-control" placeholder="Rechercher...">
                                 <button type="submit"><i class="ti-search"></i></button>
                             </div>
                         </form>
                     </div>
                     <div class="widget category-widget">
-                        <h3>Categories</h3>
+                        <h3>Catégories</h3>
                         <ul>
-                            <li><a href="{% url 'blogs' %}">Guide Information<span>5</span></a></li>
-                            <li><a href="{% url 'blogs' %}">Hotel Management <span>7</span></a></li>
-                            <li><a href="{% url 'blogs' %}">Popular Hosts <span>3</span></a></li>
-                            <li><a href="{% url 'blogs' %}">Room With a View <span>6</span></a></li>
-                            <li><a href="{% url 'blogs' %}">Vacational Plan <span>2</span></a></li>
+                            <li><a href="{% url 'blogs' %}">Actualités<span>{{ blogs|length }}</span></a></li>
+                            <li><a href="{% url 'blogs' %}">Événements <span>7</span></a></li>
+                            <li><a href="{% url 'blogs' %}">Culture <span>3</span></a></li>
+                            <li><a href="{% url 'blogs' %}">Tourisme <span>6</span></a></li>
+                            <li><a href="{% url 'blogs' %}">Infos pratiques <span>2</span></a></li>
                         </ul>
                     </div>
                     <div class="widget recent-post-widget">
-                        <h3>Related Posts</h3>
+                        <h3>Articles récents</h3>
+                        {% for recent_blog in recent_blogs|slice:":3" %}
                         <div class="posts">
                             <div class="post">
                                 <div class="img-holder">
-                                    <img src="{% static 'assets/images/recent-posts/img-1.jpg' %}" alt>
+                                    <img src="{{ recent_blog.image.url }}" alt="{{ recent_blog.title }}">
                                 </div>
                                 <div class="details">
-                                    <h4><a href="">17 places you cannot ignore in Paris</a></h4>
-                                    <span class="date">19 Jun 2023 </span>
-                                </div>
-                            </div>
-                            <div class="post">
-                                <div class="img-holder">
-                                    <img src="{% static 'assets/images/recent-posts/img-2.jpg' %}" alt>
-                                </div>
-                                <div class="details">
-                                    <h4><a href="">Be Careful About This, When You Are In
-                                            Snow</a></h4>
-                                    <span class="date">22 May 2023 </span>
-                                </div>
-                            </div>
-                            <div class="post">
-                                <div class="img-holder">
-                                    <img src="{% static 'assets/images/recent-posts/img-3.jpg' %}" alt>
-                                </div>
-                                <div class="details">
-                                    <h4><a href="">Things You Must Need To See While You’re In
-                                            Dubai</a></h4>
-                                    <span class="date">12 Apr 2023 </span>
+                                    <h4><a href="{% url 'blog-single' recent_blog.id %}">{{ recent_blog.title|truncatewords:5 }}</a></h4>
+                                    <span class="date">{{ recent_blog.created_at|date:"d M Y" }}</span>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="widget wpo-instagram-widget">
-                        <div class="widget-title">
-                            <h3>Discover Our Rooms</h3>
-                        </div>
-                        <ul class="d-flex">
-                            <li><a href=""><img src="{% static 'assets/images/instragram/1.jpg' %}" alt=""></a>
-                            </li>
-                            <li><a href=""><img src="{% static 'assets/images/instragram/2.jpg' %}" alt=""></a>
-                            </li>
-                            <li><a href=""><img src="{% static 'assets/images/instragram/3.jpg' %}" alt=""></a>
-                            </li>
-                            <li><a href=""><img src="{% static 'assets/images/instragram/4.jpg' %}" alt=""></a>
-                            </li>
-                            <li><a href=""><img src="{% static 'assets/images/instragram/5.jpg' %}" alt=""></a>
-                            </li>
-                            <li><a href=""><img src="{% static 'assets/images/instragram/6.jpg' %}" alt=""></a>
-                            </li>
-                        </ul>
+                        {% endfor %}
                     </div>
                     <div class="widget tag-widget">
-                        <h3>Tags</h3>
+                        <h3>Mots-clés</h3>
                         <ul>
-                            <li><a href="#">Travelling</a></li>
-                            <li><a href="#">Hotel</a></li>
-                            <li><a href="#">Restaurant</a></li>
-                            <li><a href="#">World Tour</a></li>
-                            <li><a href="#">Hotel Room</a></li>
-                            <li><a href="#">Spa</a></li>
-                            <li><a href="#">Guide</a></li>
+                            <li><a href="#">Bonoua</a></li>
+                            <li><a href="#">Tourisme</a></li>
+                            <li><a href="#">Culture</a></li>
+                            <li><a href="#">Événements</a></li>
+                            <li><a href="#">Patrimoine</a></li>
+                            <li><a href="#">Découverte</a></li>
+                            <li><a href="#">Actualité</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
-    </div> <!-- end container -->
+    </div>
 </section>
 <!-- end wpo-blog-pg-section -->
 

@@ -4,7 +4,55 @@
 {% load static %}
 
 {% block content %}
+<style>
+    .messages {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 20px 0;
+    }
 
+    .messages li {
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .messages .success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .messages .error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    .messages .info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+    }
+
+    .messages .warning {
+        background-color: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeeba;
+    }
+</style>
+
+<!-- Messages d'erreur ou de succès -->
+<center>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message|safe }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</center>
 <!-- start of breadcumb-section -->
 <div class="wpo-breadcumb-area">
     <div class="container">
@@ -127,11 +175,14 @@
                     </div>
                 </div>
 
+                <!-- Début de la section des avis -->
                 <div class="room-review">
                     <div class="room-title">
                         <h2>Avis</h2>
                     </div>
-                    {% for commentaire in commentaires %}
+
+                    <!-- Affichage des 2 premiers commentaires -->
+                    {% for commentaire in commentaires|slice:":2" %}
                     <div class="review-item">
                         <div class="review-img">
                             <img src="{% if image_default and image_default.image.url %}{{ image_default.image.url }}{% else %}{% static 'assets/images/room/r1.jpg' %}{% endif %}"
@@ -158,8 +209,63 @@
                     <p>Aucun avis pour cet hôtel. Soyez le premier à laisser un commentaire !</p>
                     {% endfor %}
 
+                    <!-- Commentaires supplémentaires (cachés par défaut) -->
+                    <div id="more-comments" style="display: none;">
+                        {% for commentaire in commentaires|slice:"2:" %}
+                        <div class="review-item">
+                            <div class="review-img">
+                                <img src="{% if image_default and image_default.image.url %}{{ image_default.image.url }}{% else %}{% static 'assets/images/room/r1.jpg' %}{% endif %}"
+                                    alt="Photo de profil">
+                            </div>
+                            <div class="review-text">
+                                <div class="r-title">
+                                    <h2>{{ commentaire.user }}</h2>
+                                    <ul style="display: flex; padding: 0; list-style: none;">
+                                        {% for i in "12345" %}
+                                        {% if forloop.counter <= commentaire.note %} <li
+                                            style="color:#f4c542; font-size: 18px;">★</li>
+                                            {% else %}
+                                            <li style="color:#ccc; font-size: 18px;">☆</li>
+                                            {% endif %}
+                                            {% endfor %}
+                                    </ul>
+                                </div>
+                                <p>{{ commentaire.commentaire }}</p>
+                                <small>Posté le {{ commentaire.date_creation|date:"d M Y" }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
 
+                    <!-- Bouton "Afficher plus" (seulement s'il y a plus de 2 commentaires) -->
+                    {% if commentaires|length > 2 %}
+                    <button id="show-more-btn" style="background-color: #1f2b4d; 
+                   color: white; 
+                   border: none; 
+                   padding: 10px 20px; 
+                   border-radius: 5px; 
+                   margin-top: 20px; 
+                   cursor: pointer;">
+                        Afficher plus d'avis ({{ commentaires|length|add:"-2" }})
+                    </button>
+                    {% endif %}
                 </div>
+
+                <script>
+                    // Script pour gérer l'affichage des commentaires supplémentaires
+                    document.getElementById('show-more-btn')?.addEventListener('click', function () {
+                        const moreComments = document.getElementById('more-comments');
+                        const showMoreBtn = document.getElementById('show-more-btn');
+
+                        if (moreComments.style.display === 'none') {
+                            moreComments.style.display = 'block';
+                            showMoreBtn.textContent = 'Afficher moins';
+                        } else {
+                            moreComments.style.display = 'none';
+                            showMoreBtn.textContent = `Afficher plus d'avis ({{ commentaires|length|add:"-2" }})`;
+                        }
+                    });
+                </script>
 
                 {% if user.is_authenticated %}
                 <div class="add-review">
@@ -235,8 +341,8 @@
                     <textarea id="comment" placeholder="Votre commentaire" name="commentaire" required
                         style="width:100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc;"></textarea>
                 </div>
-                <a href="{% url 'login' %}" 
-                   style="display: inline-block; background-color:#1f2b4d; color:white; padding:12px 25px; border:none; border-radius:25px; font-weight:bold; text-align:center; text-decoration:none; cursor:pointer; margin-top: 20px; display: block;">
+                <a href="{% url 'login' %}"
+                    style="display: inline-block; background-color:#1f2b4d; color:white; padding:12px 25px; border:none; border-radius:25px; font-weight:bold; text-align:center; text-decoration:none; cursor:pointer; margin-top: 20px; display: block;">
                     SE CONNECTER
                 </a>
                 {% endif %}
@@ -244,37 +350,31 @@
             <div class="col-lg-4 col-12">
                 <div class="blog-sidebar room-sidebar">
                     <div class="widget recent-post-widget">
-                        <h3>Related Posts</h3>
-                        <div class="posts">
-                            <div class="post">
-                                <div class="img-holder">
-                                    <img src="{% static 'assets/images/recent-posts/img-1.jpg' %}" alt>
+                        <h3 style="font-size: 18px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee;">Autres articles</h3>
+                        <div class="posts" style="display: grid; gap: 15px;">
+                            {% for blog in all_blogs|slice:":3" %}
+                            <div class="post" style="display: flex; gap: 12px; align-items: flex-start;">
+                                <div class="img-holder" style="width: 100px; height: 80px; overflow: hidden; flex-shrink: 0;">
+                                    <img src="{{ blog.image.url }}" alt="{{ blog.title }}" 
+                                         style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
-                                <div class="details">
-                                    <h4><a href="">17 places you cannot ignore in Paris</a></h4>
-                                    <span class="date">19 Jun 2021 </span>
-                                </div>
-                            </div>
-                            <div class="post">
-                                <div class="img-holder">
-                                    <img src="{% static 'assets/images/recent-posts/img-2.jpg' %}" alt>
-                                </div>
-                                <div class="details">
-                                    <h4><a href="">Be Careful About This, When You Are In
-                                            Snow</a></h4>
-                                    <span class="date">22 May 2021 </span>
-                                </div>
-                            </div>
-                            <div class="post">
-                                <div class="img-holder">
-                                    <img src="{% static 'assets/images/recent-posts/img-3.jpg' %}" alt>
-                                </div>
-                                <div class="details">
-                                    <h4><a href="">Things You Must Need To See While You’re In
-                                            Dubai</a></h4>
-                                    <span class="date">12 Apr 2021 </span>
+                                <div class="details" style="flex: 1;">
+                                    <h4 style="margin: 0 0 4px 0; font-size: 14px; line-height: 1.3;">
+                                        <a href="{% url 'blog-single' blog.id %}" style="color: #333; text-decoration: none;">
+                                            {{ blog.title|truncatewords:6 }}
+                                        </a>
+                                    </h4>
+                                    <span class="date" style="color: #888; font-size: 11px; display: flex; align-items: center;">
+                        
+                                        {{ blog.created_at|date:"d M Y" }}
+                                    </span>
                                 </div>
                             </div>
+                            {% empty %}
+                            <div style="color: #666; font-size: 13px; padding: 10px 0;">
+                                Aucun autre article disponible
+                            </div>
+                            {% endfor %}
                         </div>
                     </div>
                     <div class="wpo-contact-widget widget">
@@ -285,6 +385,8 @@
                     </div>
                 </div>
             </div>
+            
+            
         </div>
     </div>
 </div>
@@ -305,6 +407,8 @@
         /* Supprime les marges par défaut */
     }
 </style>
+
+
 
 
 {% endblock content %}

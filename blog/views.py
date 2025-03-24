@@ -22,7 +22,7 @@ def author(request):
 def blogs(request):
     all_blogs = Article.objects.all().annotate(comment_count=Count("comments"))
     datas = {
-        'all_blogs': all_blogs
+        'all_blogs': all_blogs,
     }
     return render(request, 'blogs.html', datas)
 

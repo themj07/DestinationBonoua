@@ -1,6 +1,5 @@
 {% extends 'bases/baseReste.html' %}
 
-
 {% load static %}
 
 {% block content %}
@@ -23,32 +22,31 @@
         background-color: #f8d7da;
         color: #721c24;
         border-left: 5px solid #dc3545;
-
     }
 </style>
 
 <!-- Affichage des messages Django -->
-
 {% if messages %}
 <center>
-<div class="messages">
-    {% for message in messages %}
-    <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %}">
-        {{ message }}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-</div>
 </center>
 {% endif %}
+
 <!-- start of breadcumb-section -->
 <div class="wpo-breadcumb-area">
     <div class="container">
         <div class="row">
             <div class="col-12">
                 <div class="wpo-breadcumb-wrap">
-                    <h2>Contact Us</h2>
+                    <h2>Contactez-nous</h2>
                     <ul>
-                        <li><a href="{% url 'index' %}">Home</a></li>
+                        <li><a href="{% url 'index' %}">Accueil</a></li>
                         <li><span>Contact</span></li>
                     </ul>
                 </div>
@@ -57,7 +55,6 @@
     </div>
 </div>
 <!-- end of wpo-breadcumb-section-->
-
 
 <!-- start wpo-contact-pg-section -->
 <section class="wpo-contact-pg-section section-padding">
@@ -74,8 +71,8 @@
                                     </div>
                                 </div>
                                 <div class="office-info-text">
-                                    <h2>Address</h2>
-                                    <p>7 Green Lake Street Crawfordsville, IN 47933</p>
+                                    <h2>Adresse</h2>
+                                    <p>Bonoua, Côte d'Ivoire</p>
                                 </div>
                             </div>
                         </div>
@@ -87,9 +84,8 @@
                                     </div>
                                 </div>
                                 <div class="office-info-text">
-                                    <h2>Email Us</h2>
-                                    <p>hotel@gmail.com</p>
-                                    <p>hotel@gmail.com</p>
+                                    <h2>Email</h2>
+                                    <p>destinationbonoua@gmail.com</p>
                                 </div>
                             </div>
                         </div>
@@ -101,18 +97,17 @@
                                     </div>
                                 </div>
                                 <div class="office-info-text">
-                                    <h2>Call Now</h2>
-                                    <p>+1 800 123 456 789</p>
-                                    <p>+1 800 123 654 987</p>
+                                    <h2>Téléphone</h2>
+                                    <p>+225 07 07 96 13 11</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="wpo-contact-title">
-                    <h2>Have Any Question?</h2>
-                    <p>It is a long established fact that a reader will be distracted
-                        content of a page when looking.</p>
+                    <h2>Une question ?</h2>
+                    <p>Nous sommes à votre disposition pour toute demande d'information concernant la ville de Bonoua,
+                        ses institutions et ses attractions touristiques.</p>
                 </div>
                 <div class="wpo-contact-form-area">
                     <form method="post" class="contact-validation-active" action="{% url 'contact' %}">
@@ -157,25 +152,21 @@
                         </div>
                     </form>
                 </div>
-
-
-
             </div>
         </div>
-    </div> <!-- end container -->
+    </div>
 </section>
 <!-- end wpo-contact-pg-section -->
 
-<!--  start wpo-contact-map -->
+<!-- start wpo-contact-map -->
 <section class="wpo-contact-map-section">
-    <h2 class="hidden">Contact map</h2>
+    <h2 class="hidden">Carte de contact</h2>
     <div class="wpo-contact-map">
         <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.9147703055!2d-74.11976314309273!3d40.69740344223377!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew+York%2C+NY%2C+USA!5e0!3m2!1sen!2sbd!4v1547528325671"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126874.6255527711!2d-3.6024173999999997!3d5.2724723!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfc1ebb7e3bcea6b%3A0x5a5a6d1b1b1b1b1b!2sBonoua%2C%20C%C3%B4te%20d&#39;Ivoire!5e0!3m2!1sfr!2sfr!4v1620000000000!5m2!1sfr!2sfr"
             allowfullscreen></iframe>
     </div>
 </section>
 <!-- end wpo-contact-map -->
-
 
 {% endblock content %}

@@ -11,7 +11,4 @@ urlpatterns = [
     path('instituts/<int:type_id>/', views.instituts, name='instituts'),
     path('places-single-institut/<int:institution_id>/', views.places_single_institut, name='places-single-institut'),
     path('placesTourismes/', views.places_tourismes, name='places-tourismes'),
-    path('service/', views.service, name='service'),
-    path('service-s2/', views.service_s2, name='service-s2'),
-    path('service-single/', views.service_single, name='service-single'),
 ]
