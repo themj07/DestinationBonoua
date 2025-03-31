@@ -5,7 +5,17 @@
 {% block content %}
 
 <style>
-    /* Styles pour adapter les images aux cadres */
+    @keyframes fadeInSlideUp {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
     .image-container {
         width: 100%;
         max-width: 600px;
@@ -35,7 +45,89 @@
     .image-container img:hover {
         transform: scale(1.05);
     }
+
+    .search-container {
+        margin-bottom: 30px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        animation: fadeInSlideUp 0.8s ease forwards;
+    }
+
+    .search-form {
+        display: flex;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .search-form input {
+        flex: 1;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px 0 0 4px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+
+    .search-form input:focus {
+        outline: none;
+        border-color: #4e6baf;
+        box-shadow: 0 0 5px rgba(78, 107, 175, 0.4);
+    }
+
+    .search-form button {
+        padding: 0 20px;
+        background: #4e6baf;
+        color: white;
+        border: none;
+        border-radius: 0 4px 4px 0;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .search-form button:hover {
+        background: #3a5a9a;
+    }
+
+    .blog-centered {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    /* Animation des articles */
+    .fade-article {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s ease-in-out;
+    }
+
+    .fade-article.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
 </style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const articles = document.querySelectorAll(".fade-article");
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("visible");
+                    observer.unobserve(entry.target); // une seule fois
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        articles.forEach(article => {
+            observer.observe(article);
+        });
+    });
+</script>
 
 <!-- start of breadcumb-section -->
 <div class="wpo-breadcumb-area">
@@ -53,16 +145,25 @@
         </div>
     </div>
 </div>
-<!-- end of wpo-breadcumb-section-->
+
+<!-- Barre de recherche -->
+<div class="container">
+    <div class="search-container">
+        <form method="GET" action="{% url 'blogs' %}" class="search-form">
+            <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Rechercher des articles..." aria-label="Rechercher">
+            <button type="submit"><i class="ti-search"></i> Rechercher</button>
+        </form>
+    </div>
+</div>
 
 <!-- start wpo-blog-pg-section -->
 <section class="wpo-blog-pg-section section-padding">
     <div class="container">
-        <div class="row">
-            <div class="col col-lg-8">
-                <div class="wpo-blog-content">
+        <div class="blog-centered">
+            <div class="wpo-blog-content">
+                {% if all_blogs %}
                     {% for blog in all_blogs %}
-                    <div class="post format-standard-image">
+                    <div class="post format-standard-image fade-article">
                         <div class="entry-media">
                             <div class="image-container">
                                 <img src="{{ blog.image.url }}" alt="{{ blog.title }}">
@@ -81,66 +182,19 @@
                             <a href="{% url 'blog-single' blog.id %}" class="read-more">Lire la suite...</a>
                         </div>
                     </div>
-                    {% empty %}
-                    <div class="alert alert-info">
-                        Aucun article de blog disponible pour le moment.
-                    </div>
                     {% endfor %}
-                </div>
-            </div>
-            <div class="col col-lg-4">
-                <div class="blog-sidebar">
-                    <div class="widget search-widget">
-                        <form>
-                            <div>
-                                <input type="text" class="form-control" placeholder="Rechercher...">
-                                <button type="submit"><i class="ti-search"></i></button>
-                            </div>
-                        </form>
+                {% else %}
+                    <div class="alert alert-info">
+                        {% if request.GET.q %}
+                            Aucun article trouvé pour "{{ request.GET.q }}"
+                        {% else %}
+                            Aucun article de blog disponible pour le moment.
+                        {% endif %}
                     </div>
-                    <div class="widget category-widget">
-                        <h3>Catégories</h3>
-                        <ul>
-                            <li><a href="{% url 'blogs' %}">Actualités<span>{{ blogs|length }}</span></a></li>
-                            <li><a href="{% url 'blogs' %}">Événements <span>7</span></a></li>
-                            <li><a href="{% url 'blogs' %}">Culture <span>3</span></a></li>
-                            <li><a href="{% url 'blogs' %}">Tourisme <span>6</span></a></li>
-                            <li><a href="{% url 'blogs' %}">Infos pratiques <span>2</span></a></li>
-                        </ul>
-                    </div>
-                    <div class="widget recent-post-widget">
-                        <h3>Articles récents</h3>
-                        {% for recent_blog in recent_blogs|slice:":3" %}
-                        <div class="posts">
-                            <div class="post">
-                                <div class="img-holder">
-                                    <img src="{{ recent_blog.image.url }}" alt="{{ recent_blog.title }}">
-                                </div>
-                                <div class="details">
-                                    <h4><a href="{% url 'blog-single' recent_blog.id %}">{{ recent_blog.title|truncatewords:5 }}</a></h4>
-                                    <span class="date">{{ recent_blog.created_at|date:"d M Y" }}</span>
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    <div class="widget tag-widget">
-                        <h3>Mots-clés</h3>
-                        <ul>
-                            <li><a href="#">Bonoua</a></li>
-                            <li><a href="#">Tourisme</a></li>
-                            <li><a href="#">Culture</a></li>
-                            <li><a href="#">Événements</a></li>
-                            <li><a href="#">Patrimoine</a></li>
-                            <li><a href="#">Découverte</a></li>
-                            <li><a href="#">Actualité</a></li>
-                        </ul>
-                    </div>
-                </div>
+                {% endif %}
             </div>
         </div>
     </div>
 </section>
-<!-- end wpo-blog-pg-section -->
 
 {% endblock content %}

@@ -6,9 +6,9 @@ from django.shortcuts import render
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
-
 from blog.models import Article
 from django.db.models import Count
+from django.db.models import Count, Q
 
 from .models import DefaultPlaceHolderPersonne, Institution, InstitutionType, Toursisme, ToursismeType, CommentaireTourisme
 
@@ -36,13 +36,20 @@ def error_404(request):
 
 
 def places_tourismes(request):
-    types_tourisme = ToursismeType.objects.all()
+    query = request.GET.get('q')
+    
+    if query:
+        types_tourisme = ToursismeType.objects.filter(
+            Q(name__icontains=query)
+        )
+    else:
+        types_tourisme = ToursismeType.objects.all()
+
     all_blogs = Article.objects.all().annotate(comment_count=Count("comments"))
 
     datas = {
-        'types_tourisme' : types_tourisme,
+        'types_tourisme': types_tourisme,
         'all_blogs': all_blogs,
-
     }
     return render(request, 'placesTourismes.html', datas)
 
@@ -93,13 +100,23 @@ def hotel_single(request, tourisme_id):
 
 
 # 🔹 Page listant tous les types d’institutions (ex: Hôpital, Mairie, etc.)
+
+
 def places_instituts(request):
-    types_institut = InstitutionType.objects.all()
+    query = request.GET.get('q')
+    
+    if query:
+        types_institut = InstitutionType.objects.filter(
+            Q(name__icontains=query)
+        )
+    else:
+        types_institut = InstitutionType.objects.all()
+        
     all_blogs = Article.objects.all().annotate(comment_count=Count("comments"))
+    
     datas = {
         'types_institut': types_institut,
         'all_blogs': all_blogs,
-
     }
     return render(request, 'placesInstituts.html', datas)
 
@@ -126,8 +143,6 @@ def places_single_institut(request, institution_id):
         'default_placeholder': default_placeholder,
     }
     return render(request, 'places-single-institut.html', datas)
-
-
 
 
 def places_single_tourisme(request):

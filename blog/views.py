@@ -1,3 +1,5 @@
+
+from django.db.models import Count, Q
 from django.shortcuts import render
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Article, Comment, Contact
@@ -20,12 +22,21 @@ def author(request):
 
 
 def blogs(request):
+    query = request.GET.get('q', '')  # Récupère le terme de recherche
     all_blogs = Article.objects.all().annotate(comment_count=Count("comments"))
+    
+    # Filtrage si un terme de recherche est présent
+    if query:
+        all_blogs = all_blogs.filter(
+            Q(title__icontains=query) | 
+            Q(content__icontains=query)  # Recherche dans le titre ET le contenu
+        )
+    
     datas = {
         'all_blogs': all_blogs,
+        'recent_blogs': Article.objects.order_by('-created_at')[:5],  # Pour la sidebar
     }
     return render(request, 'blogs.html', datas)
-
 
 
 def blog_single(request, blog_id):

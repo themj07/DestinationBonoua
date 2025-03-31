@@ -4,6 +4,91 @@
 
 {% block content %}
 
+<style>
+    @keyframes fadeInSlideUp {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .search-container {
+        margin: 40px auto;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        animation: fadeInSlideUp 0.8s ease forwards;
+        max-width: 900px;
+    }
+
+    .search-form {
+        display: flex;
+    }
+
+    .search-form input {
+        flex: 1;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px 0 0 4px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+
+    .search-form input:focus {
+        outline: none;
+        border-color: #4e6baf;
+        box-shadow: 0 0 5px rgba(78, 107, 175, 0.4);
+    }
+
+    .search-form button {
+        padding: 0 20px;
+        background: #4e6baf;
+        color: white;
+        border: none;
+        border-radius: 0 4px 4px 0;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .search-form button:hover {
+        background: #3a5a9a;
+    }
+
+    .places-item .image {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 3px solid #e0e0e0;
+        background-color: #f0f0f0;
+    }
+
+    .places-item .image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .places-item .image img:hover {
+        transform: scale(1.05);
+    }
+
+    .places-wraper .places-item {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+</style>
+
 <!-- start of breadcumb-section -->
 <div class="wpo-breadcumb-area">
     <div class="container">
@@ -20,14 +105,24 @@
         </div>
     </div>
 </div>
-<!-- end of wpo-breadcumb-section-->
+<!-- end of breadcumb-section-->
+
+<!-- Barre de recherche -->
+<div class="container">
+    <div class="search-container">
+        <form method="GET" action="" class="search-form">
+            <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Rechercher un service ou une institution..." aria-label="Rechercher">
+            <button type="submit"><i class="ti-search"></i> Rechercher</button>
+        </form>
+    </div>
+</div>
 
 <!-- start of places-->
 <section class="places-section section-padding">
     <div class="container">
         <div class="wraper">
             <div class="wpo-section-title s2 wow fadeInLeftSlow" data-wow-duration="1700ms">
-                <span>// services publics et administrations                </span>
+                <span>// services publics et administrations</span>
                 <h2>Découvrez nos services publics et administrations</h2>
             </div>
             <div class="places-wraper">
@@ -51,7 +146,6 @@
         </div>
     </div>
 </section>
-
 <!-- end of places-->
 
 <!-- start of blog-->
@@ -83,7 +177,6 @@
                                     <span>{{ blog.comment_count }}</span>
                                     <span class="date">Commentaires</span>
                                 </li>
-
                             </ul>
                         </div>
                         <div class="text">
@@ -101,75 +194,8 @@
             </div>
             {% endfor %}
         </div>
-        
     </div>
 </section>
 <!-- end of blog-->
-<style>
-    /* Styles pour les éléments de la populaire slider */
-    .popular-slider .places-item .image,
-    .places-wraper .places-item .image {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%; /* Garde le cadre circulaire */
-        overflow: hidden; /* Assure que les parties débordantes de l'image sont cachées */
-        display: flex;
-        justify-content: center; /* Centre l'image horizontalement */
-        align-items: center; /* Centre l'image verticalement */
-        background-color: #f0f0f0;
-        border: 2px solid #ddd; /* Ajoute une bordure autour du cadre */
-        transition: transform 0.3s ease-in-out;
-    }
-
-    /* Application du style pour les images */
-    .popular-slider .places-item .image img,
-    .places-wraper .places-item .image img {
-        width: 100%;  /* Remplie toute la largeur du cadre */
-        height: 100%; /* Remplie toute la hauteur du cadre */
-        object-fit: cover; /* Remplir le cadre sans déformation */
-        object-position: center; /* Centre l'image dans le cadre */
-        transition: transform 0.3s ease-in-out;
-    }
-
-    /* Effet de zoom sur les images au survol */
-    .popular-slider .places-item .image img:hover,
-    .places-wraper .places-item .image img:hover {
-        transform: scale(1.05);
-    }
-
-    /* Style pour les éléments dans le wrapper */
-    .places-wraper .places-item,
-    .popular-slider .places-item {
-        text-align: center; /* Centre le texte et les éléments */
-        margin-bottom: 20px;
-    }
-</style>
-<!-- end of blog-->
-
-<style>
-    .places-item .image {
-    width: 150px;       /* Taille fixe du cercle */
-    height: 150px;      /* Taille fixe du cercle */
-    border-radius: 50%; /* Rend l'image circulaire */
-    overflow: hidden;   /* Cache le débordement si l'image dépasse */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 3px solid #e0e0e0; /* Bordure légère (optionnelle) */
-    background-color: #f0f0f0; /* Fond gris clair si image manquante */
-}
-
-.places-item .image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;  /* Adapte l'image pour remplir le cercle */
-    object-position: center; /* Centre l'image */
-    transition: transform 0.3s ease-in-out;
-}
-
-.places-item .image img:hover {
-    transform: scale(1.05); /* Effet zoom léger au survol */
-}
-</style>
 
 {% endblock content %}

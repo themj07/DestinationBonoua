@@ -1,17 +1,15 @@
 {% load static %}
 
-
 <!DOCTYPE html>
 <html lang="en">
-
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="author" content="wpOceans">
-    <link rel="shortcut icon" type="image/png" href="{% static 'assets/images/favicon.png' %}">
-    <title>Hotely – Travel,Resort & Hotel Boking HTML5 Template</title>
+    <link rel="shortcut icon" type="image/png" href="{% static 'assets/images/localisa.png' %}">
+    <title>DestinationBonoua - Découvrez notre belle ville</title>
     <link href="{% static 'assets/css/themify-icons.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/flaticon.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -27,10 +25,148 @@
     <link href="{% static 'assets/css/jquery.fancybox.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/odometer-theme-default.css' %}" rel="stylesheet">
     <link href="{% static 'assets/sass/style.css' %}" rel="stylesheet">
+    <style>
+        /* Styles pour le header */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .user-dropdown .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            background: white;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 4px;
+            padding: 0;
+            list-style: none;
+        }
+
+        .user-dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .user-dropdown .dropdown-menu a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s;
+        }
+
+        .user-dropdown .dropdown-menu a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .user-name {
+            color: #333;
+            text-decoration: none;
+            padding: 5px 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .user-name:after {
+            content: "▼";
+            font-size: 0.7em;
+            margin-left: 5px;
+        }
+
+        /* Styles pour le footer */
+        .destination-footer {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            padding: 40px 0 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 300px;
+            margin-bottom: 20px;
+            padding: 0 15px;
+        }
+
+        .footer-section h2,
+        .footer-section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .contact-info {
+            list-style: none;
+            padding: 0;
+        }
+
+        .contact-info li {
+            margin-bottom: 10px;
+        }
+
+        .newsletter-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .newsletter-form button {
+            background-color: #2979ff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+
+        @media (max-width: 991px) {
+            .header-right {
+                justify-content: flex-end;
+            }
+            
+            .user-dropdown {
+                margin-left: auto;
+            }
+            
+            .navbar-nav {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 
 <body>
-
     <!-- start page-wrapper -->
     <div class="page-wrapper">
         <!-- start preloader -->
@@ -48,8 +184,6 @@
         <!-- end preloader -->
         <!-- Start header -->
         <header id="header">
-            
-            <!-- end topbar -->
             <div class="wpo-site-header wpo-site-header-s2">
                 <nav class="navigation navbar navbar-expand-lg navbar-light">
                     <div class="container">
@@ -66,30 +200,27 @@
                             </div>
                             <div class="col-lg-2 col-md-4 col-4">
                                 <div class="navbar-header">
-
+                                    <!-- Logo ici -->
                                 </div>
                             </div>
-                            <div class="col-lg-7 col-md-1 col-1">
+                            <div class="col-lg-7 col-md-6 col-6">
                                 <div id="navbar" class="collapse navbar-collapse navigation-holder">
                                     <button class="menu-close"><i class="ti-close"></i></button>
                                     <ul class="nav navbar-nav mb-2 mb-lg-0">
                                         <li class="{% if request.path == '/' %}active{% endif %}">
                                             <a href="{% url 'index' %}">Accueil</a>
                                         </li>
-                                        <li
-                                            class="menu-item-has-children {% if '/places' in request.path %}active{% endif %}">
+                                        <li class="menu-item-has-children {% if '/places' in request.path %}active{% endif %}">
                                             <a href="#">Places</a>
                                             <ul class="sub-menu">
                                                 <li class="{% if request.path == '/places/' %}active{% endif %}">
                                                     <a href="{% url 'placesInstituts' %}">Institus & Départements</a>
                                                 </li>
-                                                <li
-                                                    class="{% if request.path == '/places-single-tourisme/' %}active{% endif %}">
+                                                <li class="{% if request.path == '/places-single-tourisme/' %}active{% endif %}">
                                                     <a href="{% url 'places-tourismes' %}">Loisirs, Tourismes, etc</a>
                                                 </li>
                                             </ul>
                                         </li>
-
                                         <li>
                                             <a href="{% url 'blogs' %}">Blog</a>
                                         </li>
@@ -99,17 +230,6 @@
                                         <li class="{% if '/contact' in request.path %}active{% endif %}">
                                             <a href="{% url 'contact' %}">Contact</a>
                                         </li>
-                                        {% if user.is_authenticated %}
-                                        <li
-                                            class="menu-item-has-children {% if '/profile' in request.path %}active{% endif %}">
-                                            <a href="#">{{ user.username }}</a>
-                                            <ul class="sub-menu">
-                                                <li>
-                                                    <a href="{% url 'logout' %}">Déconnection</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        {% endif %}
                                     </ul>
                                 </div><!-- end of nav-collapse -->
                             </div>
@@ -120,23 +240,18 @@
                                         <select id="language-selector">
                                             <option value="fr" selected>Français</option>
                                             <option value="en">English (soon)</option>
-                                            <!-- <option value="de">German</option>
-                                            <option value="ar">Arabic</option> -->
                                         </select>
                                     </div>
-                                    <!-- Dans votre template (par exemple, hotel-single.html) -->
-                                    <div class="close-form">
-                                        {% if user.is_authenticated %}
-                                        <!-- ✅ Affiche 'Logout' en rouge si l'utilisateur est connecté -->
-                                        <a class="theme-btn" href="{% url 'logout' %}"
-                                            style="color: white; background-color: red; padding: 10px 20px; border-radius: 5px;">Déconnection</a>
-                                        {% else %}
-                                        <!-- 🚪 Affiche 'Login' sinon -->
-                                        <a class="theme-btn" href="{% url 'login' %}"
-                                            style="color: white; background-color: green; padding: 10px 20px; border-radius: 5px;">Connection</a>
-                                        {% endif %}
+                                    {% if user.is_authenticated %}
+                                    <div class="user-dropdown">
+                                        <a href="#" class="user-name">{{ user.username }}</a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="{% url 'logout' %}">Déconnection</a></li>
+                                        </ul>
                                     </div>
-
+                                    {% else %}
+                                    <a class="theme-btn" href="{% url 'login' %}" style="color: white; background-color: green; padding: 10px 20px; border-radius: 5px;">Connection</a>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -146,9 +261,6 @@
         </header>
 
         {% block content %}
-
-
-
         {% endblock content %}
 
         <!-- start of wpo-site-footer-section -->
@@ -176,7 +288,6 @@
                     <li>
                       <span>destinationbonoua@gmail.com</span>
                     </li>
-
                   </ul>
                 </div>
           
@@ -186,9 +297,9 @@
                         {% csrf_token %}
                         <input type="email" name="email" placeholder="Entrez votre email" required>
                         <button type="submit">S'inscrire Maintenant</button>
-                        
                     </form>
                 </div>
+              </div>
               <!-- Footer bas -->
               <div class="footer-bottom">
                 <p>&copy; 2023 DestinationBonoua | Tous droits réservés.</p>
@@ -196,12 +307,10 @@
             </div>
           </footer>
         <!-- end of wpo-site-footer-section -->
-
     </div>
     <!-- end of page-wrapper -->
 
-    <!-- All JavaScript files
-================================================== -->
+    <!-- All JavaScript files -->
     <script src="{% static 'assets/js/jquery.min.js' %}"></script>
     <script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
     <!-- Plugins for this template -->
@@ -212,101 +321,4 @@
     <script src="{% static 'assets/js/script.js' %}"></script>
     <script src="{% static 'assets/js/language.js' %}"></script>
 </body>
-
-<style>
-    /* Assurer que tout le footer est bien centré et ne déborde pas */
-    .destination-footer {
-  font-family: 'Arial', sans-serif;
-  background-color: #f5f5f5;
-  color: #333;
-  padding: 40px 0 20px;
-  line-height: 1.6;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-.footer-content {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin-bottom: 30px;
-}
-
-.footer-section {
-  flex: 1;
-  min-width: 300px;
-  margin-bottom: 20px;
-  padding: 0 15px;
-}
-
-.footer-section h2,
-.footer-section h3 {
-  color: #2c3e50;
-  margin-bottom: 20px;
-  font-size: 1.2rem;
-}
-
-.contact-info {
-  list-style: none;
-  padding: 0;
-}
-
-.contact-info li {
-  margin-bottom: 10px;
-}
-
-.newsletter-form input {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.newsletter-form button {
-  background-color: #2979ff;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.footer-bottom {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 20px;
-  border-top: 1px solid #ddd;
-}
-
-.footer-links {
-  display: flex;
-  align-items: center;
-}
-
-.footer-links span {
-  margin: 0 10px;
-}
-
-.footer-links a {
-  color: #333;
-  text-decoration: none;
-}
-
-.footer-links a:hover {
-  color: #2979ff;
-}
-}
-
-</style>
-
-
-<!-- Mirrored from wpocean.com/html/tf/hotely/404' %} by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 07 Feb 2025 11:23:08 GMT -->
-
 </html>

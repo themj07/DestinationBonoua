@@ -4,114 +4,176 @@
 
 {% block content %}
 
+<style>
+    /* Style pour le loader */
+    .loader {
+        display: none;
+        text-align: center;
+        margin: 20px 0;
+    }
+    
+    .loader-spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #4e6baf;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    /* Transition douce pour les résultats */
+    #blogResults {
+        transition: opacity 0.3s ease;
+    }
+    
+    /* Style amélioré pour la barre de recherche */
+    .search-form {
+        max-width: 600px;
+        margin: 30px auto;
+        display: flex;
+    }
+    
+    .search-form input {
+        flex: 1;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px 0 0 4px;
+        font-size: 16px;
+    }
+    
+    .search-form button {
+        padding: 0 20px;
+        background: #4e6baf;
+        color: white;
+        border: none;
+        border-radius: 0 4px 4px 0;
+        cursor: pointer;
+    }
+</style>
+
 <!-- start of breadcumb-section -->
 <div class="wpo-breadcumb-area">
     <div class="container">
         <div class="row">
             <div class="col-12">
                 <div class="wpo-breadcumb-wrap">
-                    <h2>À propos de nous</h2>
+                    <h2>Actualités</h2>
                     <ul>
                         <li><a href="{% url 'index' %}">Accueil</a></li>
-                        <li><span>À propos</span></li>
+                        <li><span>Blog</span></li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!-- end of wpo-breadcumb-section-->
 
-<!-- start of vision section -->
-<section class="vision-section section-padding">
+<!-- Barre de recherche -->
+<div class="container">
+    <form id="searchForm" class="search-form" method="GET" action="{% url 'blogs' %}">
+        <input type="text" id="searchInput" name="q" value="{{ request.GET.q }}" placeholder="Rechercher des articles...">
+        <button type="submit"><i class="ti-search"></i></button>
+    </form>
+</div>
+
+<!-- Loader -->
+<div class="loader" id="loader">
+    <div class="loader-spinner"></div>
+    <p>Recherche en cours...</p>
+</div>
+
+<!-- start wpo-blog-pg-section -->
+<section class="wpo-blog-pg-section section-padding">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-lg-10 col-md-12">
-                <div class="wpo-section-title s2 wow fadeInUp" data-wow-duration="1200ms">
-                    <span>// notre vision</span>
-                    <h2>Mettre en lumière Bonoua, son patrimoine et son avenir</h2>
-                </div>
-                <div class="wpo-about-text wow fadeInUp" data-wow-duration="1500ms" style="text-align: center;">
-                    <p>
-                        DestinationBonoua est une plateforme dédiée à la valorisation de la ville de Bonoua, en Côte d’Ivoire.
-                        À travers ce site, nous souhaitons faire découvrir les richesses culturelles, touristiques et institutionnelles
-                        de cette cité pleine de charme. Notre ambition est de devenir le point de référence pour tous ceux qui veulent
-                        visiter, investir ou en apprendre davantage sur Bonoua. En mettant en avant ses lieux emblématiques, ses événements,
-                        ses départements et ses institutions, nous contribuons à faire rayonner cette ville au niveau national et international.
-                    </p>
+            <div class="col-lg-10">
+                <div class="wpo-blog-content" id="blogResults">
+                    {% if all_blogs %}
+                        {% for blog in all_blogs %}
+                        <div class="post format-standard-image">
+                            <div class="entry-media">
+                                <div class="image-container">
+                                    <img src="{{ blog.image.url }}" alt="{{ blog.title }}">
+                                </div>
+                            </div>
+                            <div class="entry-meta">
+                                <ul>
+                                    <li><i class="fi flaticon-user"></i> Par <a href="#">{{ blog.author }}</a></li>
+                                    <li><i class="fi flaticon-comment-white-oval-bubble"></i> {{ blog.comment_count }} Commentaires</li>
+                                    <li><i class="fi flaticon-calendar"></i> {{ blog.created_at|date:"d F Y" }}</li>
+                                </ul>
+                            </div>
+                            <div class="entry-details">
+                                <h3><a href="{% url 'blog-single' blog.id %}">{{ blog.title }}</a></h3>
+                                <p>{{ blog.content|truncatewords:30 }}</p>
+                                <a href="{% url 'blog-single' blog.id %}" class="read-more">Lire la suite...</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-info">
+                            {% if request.GET.q %}
+                                Aucun article trouvé pour "{{ request.GET.q }}"
+                            {% else %}
+                                Aucun article de blog disponible pour le moment.
+                            {% endif %}
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </section>
-<!-- end of vision section -->
 
-<!-- start of simul-presentation -->
-<section class="testimonial-section section-padding">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 col-md-12">
-                <div class="wpo-section-title  wow fadeInUp" data-wow-duration="1200ms">
-                    <span>// à propos de Simul</span>
-                    <h2>"Simul", l'entreprise derriere DestinationBonoua</h2>
-                </div>
-                <div class="wpo-about-text wow fadeInUp" data-wow-duration="1500ms" style="text-align: center;">
-                    <p>
-                        Simul conçoit des sites web modernes, des plateformes performantes et des applications sur mesure pour répondre aux besoins des entreprises et institutions locales.                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="testimonial-slider owl-carousel">
-            <div class="testimonial-card wow fadeInUp" data-wow-duration="1400ms">
-                <div class="top-content">
-                    <div class="image">
-                        <img src="{% static 'assets/images/testimonial/1.jpg' %}" alt="">
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchForm = document.getElementById('searchForm');
+    const searchInput = document.getElementById('searchInput');
+    const blogResults = document.getElementById('blogResults');
+    const loader = document.getElementById('loader');
+    
+    searchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const query = searchInput.value.trim();
+        
+        // Afficher le loader
+        loader.style.display = 'block';
+        blogResults.style.opacity = '0.5';
+        
+        // Requête AJAX
+        fetch(`{% url 'blogs' %}?q=${encodeURIComponent(query)}&ajax=1`)
+            .then(response => response.text())
+            .then(html => {
+                blogResults.innerHTML = html;
+                loader.style.display = 'none';
+                blogResults.style.opacity = '1';
+                
+                // Ajouter l'URL à l'historique sans rechargement
+                history.pushState(null, null, `?q=${encodeURIComponent(query)}`);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                loader.style.display = 'none';
+                blogResults.style.opacity = '1';
+                blogResults.innerHTML = `
+                    <div class="alert alert-danger">
+                        Une erreur s'est produite lors de la recherche.
                     </div>
-                    <div class="text">
-                        <h3>Développement Web</h3>
-                        <span>Sites & Applications</span>
-                    </div>
-                </div>
-                <div class="content">
-                    <p>Simul conçoit des sites web modernes, des plateformes performantes et des applications sur mesure pour répondre aux besoins des entreprises et institutions locales.</p>
-                </div>
-            </div>
-            <div class="testimonial-card wow fadeInUp" data-wow-duration="1600ms">
-                <div class="top-content">
-                    <div class="image">
-                        <img src="{% static 'assets/images/testimonial/2.jpg' %}" alt="">
-                    </div>
-                    <div class="text">
-                        <h3>Solutions numériques</h3>
-                        <span>Informatique & automatisation</span>
-                    </div>
-                </div>
-                <div class="content">
-                    <p>Nous mettons en place des systèmes intelligents pour améliorer la productivité, faciliter la gestion et accélérer la transformation digitale.</p>
-                </div>
-            </div>
-            <div class="testimonial-card wow fadeInUp" data-wow-duration="1800ms">
-                <div class="top-content">
-                    <div class="image">
-                        <img src="{% static 'assets/images/testimonial/3.jpg' %}" alt="">
-                    </div>
-                    <div class="text">
-                        <h3>Accompagnement</h3>
-                        <span>Conseil & formation</span>
-                    </div>
-                </div>
-                <div class="content">
-                    <p>Au-delà du développement, Simul accompagne les équipes à travers des formations, du conseil stratégique et un suivi personnalisé dans leurs projets numériques.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- end of simul-presentation -->
-
-
-
-
-
+                `;
+            });
+    });
+    
+    // Permettre l'utilisation des boutons précédent/suivant du navigateur
+    window.addEventListener('popstate', function() {
+        location.reload();
+    });
+});
+</script>
 
 {% endblock content %}
