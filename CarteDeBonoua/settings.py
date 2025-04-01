@@ -8,7 +8,7 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 # SECURITY
 SECRET_KEY = 'django-insecure-baj4n@s5%a_c3j*ujczi2u=@5t4)ifvqeeud#khzkg=(ta0qmj'
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 SECURE_BROWSER_XSS_FILTER = True
