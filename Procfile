@@ -1,1 +1,1 @@
-web: gunicorn DestinationBonoua.wsgi
+web: gunicorn CarteDeBonoua.wsgi
