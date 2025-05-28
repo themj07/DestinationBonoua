@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: CarteDeBonoua
+    env: python
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+      python manage.py migrate
+    startCommand: gunicorn CarteDeBonoua.wsgi
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: CarteDeBonoua.settings
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
